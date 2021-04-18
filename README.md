@@ -1,12 +1,12 @@
 # [PA165] - Enterprise Applications in Java
-Project for the subject PA165 at FI MUNI in the spring semester 2021.
+Project for the subject PA165 at FI MUNI in the spring semester 2021.  
 **Topic:** Airport Manager.
 
 ## Team "Purple"
-- Simon Kobyda
-- Petr Hendrych
-- Jozef Vanický
-- Michal Zelenák
+- Jozef Vanický (Lead)
+- Michal Zelenák (QA)
+- Simon Kobyda (Frontend sub-lead)
+- Petr Hendrych (Backend sub-lead)
 
 ## Assignment
 Create an information system managing flight records at an airport.  
