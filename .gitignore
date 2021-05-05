@@ -31,3 +31,5 @@ Temporary Items
 *.iml
 /.idea/
 /target/
+*/target/
+
