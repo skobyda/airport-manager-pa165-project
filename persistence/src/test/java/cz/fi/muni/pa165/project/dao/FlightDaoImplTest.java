@@ -172,13 +172,7 @@ class FlightDaoImplTest {
                 flightCodeToVienna);
     }
 
-    private Flight createFlight(
-            LocalDate departure,
-            LocalDate arrival,
-            Airport destination,
-            Airport origin,
-            Airplane airplane,
-            String flightCode) {
+    private Flight createFlight(LocalDate departure, LocalDate arrival, Airport destination, Airport origin, Airplane airplane, String flightCode) {
         Flight flight = new Flight();
         flight.setFlightCode(flightCode);
         flight.setDeparture(departure);
@@ -186,7 +180,6 @@ class FlightDaoImplTest {
         flight.setDestinationAirport(destination);
         flight.setOriginAirport(origin);
         flight.setAirplane(airplane);
-
 
         return flight;
     }

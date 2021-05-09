@@ -47,19 +47,19 @@ public class FlightDaoImpl implements FlightDao {
 
     @Override
     public List<Flight> findByDeparture(LocalDate departure) {
-        return em.createQuery("select f from Flight f where f.departure= :departure", Flight.class).setParameter("departure", departure)
+        return em.createQuery("select f from Flight f where f.departure = :departure", Flight.class).setParameter("departure", departure)
                 .getResultList();
     }
 
     @Override
     public List<Flight> findByArrival(LocalDate arrival) {
-        return em.createQuery("select f from Flight f where f.arrival= :arrival", Flight.class).setParameter("arrival", arrival)
+        return em.createQuery("select f from Flight f where f.arrival = :arrival", Flight.class).setParameter("arrival", arrival)
                 .getResultList();
     }
 
     @Override
     public Flight findByFlightCode(String flightCode) {
-        return em.createQuery("select f from Flight f where f.flightCode= :flightCode", Flight.class).setParameter("flightCode", flightCode)
+        return em.createQuery("select f from Flight f where f.flightCode = :flightCode", Flight.class).setParameter("flightCode", flightCode)
                 .getSingleResult();
     }
 }

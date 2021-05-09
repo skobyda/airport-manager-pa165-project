@@ -18,6 +18,12 @@ import java.time.Month;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Michal Zelenák
+ * @created 10.04.2021
+ * @project airport-manager
+ **/
+
 @SpringBootTest(classes = AirportManagerApplication.class)
 @Transactional
 public class FlightRelationshipTest {
@@ -31,16 +37,16 @@ public class FlightRelationshipTest {
     private Steward steward2;
 
     @Autowired
-    private FlightDaoImpl flightDao=new FlightDaoImpl();
+    private FlightDaoImpl flightDao = new FlightDaoImpl();
 
     @Autowired
-    private AirportDaoImpl airportDao= new AirportDaoImpl();
+    private AirportDaoImpl airportDao = new AirportDaoImpl();
 
     @Autowired
-    private AirplaneDaoImpl airplaneDao= new AirplaneDaoImpl();
+    private AirplaneDaoImpl airplaneDao = new AirplaneDaoImpl();
 
     @Autowired
-    private StewardDaoImpl stewardDao= new StewardDaoImpl();
+    private StewardDaoImpl stewardDao = new StewardDaoImpl();
 
     @BeforeEach
     void setup(){
@@ -117,7 +123,7 @@ public class FlightRelationshipTest {
 
     @Test
     void setStewardsTest(){
-        Set<Steward> stewards=new HashSet<>();
+        Set<Steward> stewards = new HashSet<>();
         stewards.add(steward1);
         stewards.add(steward2);
         flight2.setStewards(stewards);
@@ -129,7 +135,6 @@ public class FlightRelationshipTest {
         Assertions.assertTrue(steward1.getFlights().contains(flight1) && steward2.getFlights().contains(flight1));
         Assertions.assertTrue(steward1.getFlights().contains(flight2) && steward2.getFlights().contains(flight2));
     }
-
 
     private Flight createFlight(
             LocalDate departure,

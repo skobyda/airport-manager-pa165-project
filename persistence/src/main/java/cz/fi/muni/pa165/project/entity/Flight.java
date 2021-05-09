@@ -108,7 +108,7 @@ public class Flight {
     }
 
     public void setStewards(Set<Steward> stewards){
-        this.stewards=stewards;
+        this.stewards = stewards;
         for(Steward steward: stewards){
             steward.addFlight(this);
         }

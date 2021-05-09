@@ -44,7 +44,6 @@ class AirplaneDaoImplTest {
         return airplane;
     }
 
-
     @BeforeEach
     void setUp() {
         airplane1 = createAirplane("RandomAirplaneName1", 100, AirplaneType.JET);

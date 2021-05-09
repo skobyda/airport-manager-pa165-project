@@ -10,6 +10,7 @@ import java.util.List;
  * @created 28.04.2021
  * @project airport-manager
  **/
+
 public interface AirplaneService {
 
     /**
@@ -20,7 +21,7 @@ public interface AirplaneService {
     List<Airplane> findAll();
 
     /**
-     * Method to specifc {@Code Airplane} entity by id.
+     * Method to specific {@Code Airplane} entity by id.
      *
      * @param id - id of {@Code Airplane} entity
      * @return - {@Code Airplane} entity
@@ -51,7 +52,7 @@ public interface AirplaneService {
     /**
      * Method to get list of {@Code Airplane} entities with bigger or equal then given capacity.
      *
-     * @param capacity - given capacity for comparesition
+     * @param capacity - given capacity for comparison
      * @return - list of {@Code Airplane} entities
      */
     List<Airplane> findWithBiggerOrEqualCapacity(Integer capacity);
@@ -59,7 +60,7 @@ public interface AirplaneService {
     /**
      * Method to get list of {@Code Airplane} entities with lower or equal then given capacity.
      *
-     * @param capacity - given capacity for comparesition
+     * @param capacity - given capacity for comparison
      * @return - list of {@Code Airplane} entities
      */
     List<Airplane> findWithLowerOrEqualCapacity(Integer capacity);

@@ -1,6 +1,5 @@
 package cz.fi.muni.pa165.project.facade;
 
-
 import cz.fi.muni.pa165.project.dto.*;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.entity.Airport;
@@ -102,7 +101,7 @@ class FlightFacadeImplTest {
         stewards.add(steward2DTO);
 
         //create set of flights
-        HashSet<FlightDTO> flightsDTOset = new HashSet<FlightDTO>();
+        HashSet<FlightDTO> flightsDTOset = new HashSet<>();
         flightsDTOset.add(flight1DTO);
 
         //create relationships for flight with id 1

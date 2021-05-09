@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 class UserFacadeImplTest {
 
     @InjectMocks
-    private UserFacadeImpl userFacade = new UserFacadeImpl();
+    private final UserFacadeImpl userFacade = new UserFacadeImpl();
 
     @MockBean
     private UserService userService;
@@ -45,11 +45,19 @@ class UserFacadeImplTest {
 
     @BeforeEach
     void setUp() {
-        user = createUser(1L, "mail@mail.com", "John", "Dean", "Street 2");
+        user = createUser(1L, "xXJohnXx", "mail@mail.com", "John", "Dean", "Street 2");
         userDTO = createUserDTO(1L, user.getEmail(), user.getName(), user.getSurname(), user.getAddress());
-        userAuthenticateDTO = createUserAuthenticateDTO(1l, "hranolky8");
+        userAuthenticateDTO = createUserAuthenticateDTO(1L, "hranolky8");
     }
 
+    @Test
+    void registerUser() {
+        when(beanMappingService.mapTo(userDTO, User.class)).thenReturn(user);
+
+        userFacade.registerUser(userDTO, "frenchFry8");
+
+        verify(userService).registerUser(user, "frenchFry8");
+    }
 
     @Test
     void findUserByIdTest() {
@@ -61,6 +69,8 @@ class UserFacadeImplTest {
 
         assertThat(user).isEqualTo(userDTO);
         assertThat(user.getName()).isEqualTo("John");
+
+        verify(userService).findUserById(1L);
     }
 
     @Test
@@ -73,6 +83,8 @@ class UserFacadeImplTest {
 
         assertThat(user.getId()).isEqualTo(1L);
         assertThat(user.getSurname()).isEqualTo("Dean");
+
+        verify(userService).findUserByEmail("mail@mail.com");
     }
 
     @Test
@@ -98,10 +110,11 @@ class UserFacadeImplTest {
         assertTrue(authenticated);
     }
 
-    private static User createUser(Long id, String email, String name, String surname, String address) {
+    private static User createUser(Long id, String login, String email, String name, String surname, String address) {
         User user = new User();
 
         user.setId(id);
+        user.setLogin(login);
         user.setEmail(email);
         user.setName(name);
         user.setSurname(surname);

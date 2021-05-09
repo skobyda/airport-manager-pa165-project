@@ -24,6 +24,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder = new Argon2PasswordEncoder();
 
     @Override
+    public void registerUser(User u, String password) {
+        u.setPasswordHash(encoder.encode(password));
+        userDao.create(u);
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userDao.findAll();
     }

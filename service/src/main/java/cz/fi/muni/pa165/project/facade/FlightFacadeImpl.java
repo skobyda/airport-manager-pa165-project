@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,16 +54,14 @@ public class FlightFacadeImpl implements FlightFacade {
 
     @Override
     public Long create(FlightCreateDTO flightCreateDTO) throws Exception {
-         Flight mappedFlight = mapFlightCreateDTOToFlight(flightCreateDTO);
-        //Flight mappedFlight = beanMappingService.mapTo(flightCreateDTO, Flight.class);
-       Flight flight = flightService.create(mappedFlight);
-       return flight.getId();
+        Flight mappedFlight = mapFlightCreateDTOToFlight(flightCreateDTO);
+        Flight flight = flightService.create(mappedFlight);
+        return flight.getId();
     }
 
     @Override
     public Long update(FlightDTO flightDTO) throws Exception {
         Flight mappedFlight = mapFlightDTOtoFlight(flightDTO);
-        //Flight mappedFlight = beanMappingService.mapTo(flightDTO, Flight.class);
         Flight flight = flightService.update(mappedFlight);
         return flight.getId();
     }
@@ -107,7 +104,6 @@ public class FlightFacadeImpl implements FlightFacade {
     private Flight mapFlightCreateDTOToFlight(FlightCreateDTO flightCreateDTO) {
         Flight mappedFlight = new Flight();
         mappedFlight.setFlightCode(flightCreateDTO.getFlightCode());
-        //System.out.println(flightCreateDTO.getStewardIds());
         mappedFlight.setDeparture(flightCreateDTO.getDeparture());
         mappedFlight.setArrival(flightCreateDTO.getArrival());
         mappedFlight.setAirplane(airplaneService.findById(flightCreateDTO.getAirplaneId()));

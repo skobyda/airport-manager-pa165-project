@@ -9,7 +9,6 @@ import java.util.*;
  * @project airport-manager
  **/
 
-
 @Entity
 public class Steward {
     @Id
