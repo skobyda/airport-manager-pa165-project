@@ -47,7 +47,6 @@ class AirplaneFacadeImplTest {
     private AirplaneDTO airbusDTO;
 
     private Airplane boeing;
-    private AirplaneCreateDTO boeingCreateDTO;
     private AirplaneDTO boeingDTO;
 
     @BeforeEach
@@ -57,7 +56,6 @@ class AirplaneFacadeImplTest {
         airbusDTO = createAirplaneDTO(1L, airbus.getName(), airbus.getCapacity(), airbus.getType(), new HashSet<>());
 
         boeing = createAirplane(2L, "Boeing", 400, AirplaneType.COMMUTER);
-        boeingCreateDTO = createAirplaneCreateDTO(boeing.getName(), boeing.getCapacity(), boeing.getType());
         boeingDTO = createAirplaneDTO(2L, boeing.getName(), boeing.getCapacity(), boeing.getType(), new HashSet<>());
     }
 

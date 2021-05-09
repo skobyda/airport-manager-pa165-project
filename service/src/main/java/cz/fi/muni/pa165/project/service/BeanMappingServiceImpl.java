@@ -1,6 +1,5 @@
 package cz.fi.muni.pa165.project.service;
 
-
 import com.github.dozermapper.core.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Petr Hendrych
+ * @author Petr Hendrych, Jozef Vanický, Michal Zelenák
  * @created 28.04.2021
  * @project airport-manager
  **/

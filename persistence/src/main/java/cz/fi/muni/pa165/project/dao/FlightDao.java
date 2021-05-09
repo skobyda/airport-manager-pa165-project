@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Interface for Flight Data object
  * @author Michal Zelenák
  * @created 09.04.2021
  * @project airport-manager
@@ -15,7 +14,7 @@ public interface FlightDao {
 
     /**
      * Method for creating {@Code Flight} entity in database
-     * @param flight
+     * @param flight - entity to create
      */
     void create(Flight flight);
 
@@ -27,40 +26,40 @@ public interface FlightDao {
 
     /**
      * Method for finding {@Code Flight} by ID from database
-     * @param id
+     * @param id - Id of the entity to find
      * @return List of {@Code Flight} entities
      */
     Flight findById(Long id);
 
     /**
      * Method for removing {@Code Flight} entity from database
-     * @param id
+     * @param id - id of entity to delete
      */
-    void delete(Flight id);
+    void delete(Flight flight);
 
     /**
      * Method for update of {@Code Flight} entity
-     * @param flight
+     * @param flight - entity to update
      */
     void update(Flight flight);
 
     /**
      * Method for finding list of {@Code Flight} entities by their departure times
-     * @param departure
+     * @param departure - date when flight have scheduled departure
      * @return List of {@Code Flight} entities
      */
     List<Flight> findByDeparture(LocalDate departure);
 
     /**
      * Method for finding list of {@Code Flight} entities by their arrival times
-     * @param arrival
+     * @param arrival - date when flight have scheduled arrival
      * @return List of {@Code Flight} entities
      */
     List<Flight> findByArrival(LocalDate arrival);
 
     /**
      * Method for finding {@Code Flight} entities by their flightCode
-     * @param flightCode
+     * @param flightCode - unique code of flight
      * @return List of {@Code Flight} entities
      */
     Flight findByFlightCode(String flightCode);

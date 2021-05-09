@@ -15,6 +15,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+/**
+ * @author Michal Zelenák
+ * @created 10.04.2021
+ * @project airport-manager
+ **/
+
 @SpringBootTest(classes = AirportManagerApplication.class)
 @Transactional
 class AirportDaoImplTest {
@@ -35,15 +41,15 @@ class AirportDaoImplTest {
 
     @BeforeEach
     void setUp() {
-        flight123=createFlight(LocalDate.of(2021,11,9),LocalDate.of(2021,11,9),"JAR-123");
-        flight125=createFlight(LocalDate.of(2021,11,8),LocalDate.of(2021,11,8),"JAR-125");
-        flight127=createFlight(LocalDate.of(2021,12,8),LocalDate.of(2021,12,8),"JAR-127");
+        flight123 = createFlight(LocalDate.of(2021,11,9),LocalDate.of(2021,11,9),"JAR-123");
+        flight125 = createFlight(LocalDate.of(2021,11,8),LocalDate.of(2021,11,8),"JAR-125");
+        flight127 = createFlight(LocalDate.of(2021,12,8),LocalDate.of(2021,12,8),"JAR-127");
         flightDAO.create(flight123);
         flightDAO.create(flight125);
         flightDAO.create(flight127);
 
-        KennedyAirport= new Airport();
-        WashingtonAirport= new Airport();
+        KennedyAirport = new Airport();
+        WashingtonAirport = new Airport();
         toUpdateAirport = new Airport();
 
         KennedyAirport.setCountry("USA");
@@ -65,7 +71,7 @@ class AirportDaoImplTest {
 
     @Test
     void findAll() {
-        List<Airport> airports= airportDao.findAll();
+        List<Airport> airports = airportDao.findAll();
         assertEquals(3,airports.size());
     }
 
@@ -77,10 +83,9 @@ class AirportDaoImplTest {
         assertEquals(found.getCountry(), "USA");
     }
 
-
     @Test
     void findByName() {
-        List<Airport> airportByName=airportDao.findByName(KennedyAirport.getName());
+        List<Airport> airportByName = airportDao.findByName(KennedyAirport.getName());
         assertEquals("Kennedy airport",airportByName.get(0).getName());
         assertEquals("New York",airportByName.get(0).getCity());
         assertEquals( "USA",airportByName.get(0).getCountry());
@@ -88,7 +93,7 @@ class AirportDaoImplTest {
 
     @Test
     void findByCity() {
-        List<Airport> airportByCity=airportDao.findByCity(KennedyAirport.getCity());
+        List<Airport> airportByCity = airportDao.findByCity(KennedyAirport.getCity());
         assertEquals("Kennedy airport",airportByCity.get(0).getName());
         assertEquals("New York",airportByCity.get(0).getCity());
         assertEquals( "USA",airportByCity.get(0).getCountry());
@@ -96,24 +101,22 @@ class AirportDaoImplTest {
 
     @Test
     void findByCountry() {
-        List<Airport> airportByCountry=airportDao.findByCountry(KennedyAirport.getCountry());
+        List<Airport> airportByCountry = airportDao.findByCountry(KennedyAirport.getCountry());
         assertEquals("Kennedy airport",airportByCountry.get(0).getName());
         assertEquals("New York",airportByCountry.get(0).getCity());
         assertEquals( "USA",airportByCountry.get(0).getCountry());
     }
 
-
     @Test
     void delete() {
         Airport ToDeleteAirport;
-        ToDeleteAirport=new Airport();
+        ToDeleteAirport = new Airport();
         ToDeleteAirport.setCountry("AU");
         ToDeleteAirport.setName("LincolnAirport");
         ToDeleteAirport.setCity("Vienna");
         airportDao.create(ToDeleteAirport);
 
         airportDao.delete(ToDeleteAirport);
-        System.out.println(airportDao.findAll().size());
         assertEquals(3,airportDao.findAll().size());
     }
 
@@ -126,14 +129,13 @@ class AirportDaoImplTest {
         toDeleteAirport2.setCity("Alma");
         airportDao.create(toDeleteAirport2);
         airportDao.deleteById(toDeleteAirport2.getId());
-        System.out.println(airportDao.findAll().size());
         assertEquals(3,airportDao.findAll().size());
     }
 
     private Flight createFlight(LocalDate arrival, LocalDate departure, String flightCode) {
-        flight123 =new Flight();
-        flight123.setArrival(LocalDate.of(2021,11,9));
-        flight123.setDeparture(LocalDate.of(2021,11,9));
+        flight123 = new Flight();
+        flight123.setArrival(arrival);
+        flight123.setDeparture(departure);
         flight123.setFlightCode(flightCode);
         return flight123;
     }

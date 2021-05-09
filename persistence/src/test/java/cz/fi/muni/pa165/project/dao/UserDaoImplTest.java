@@ -31,6 +31,7 @@ class UserDaoImplTest {
     @BeforeEach
     void setUp() {
         user1 = createUser(
+                "John69",
                 "john.dean@gmail.com",
                 "John",
                 "Dean",
@@ -38,6 +39,7 @@ class UserDaoImplTest {
         );
 
         user2 = createUser(
+                "Linda123",
                 "linda.huge@hotmail.com",
                 "Linda",
                 "Huge",
@@ -75,6 +77,7 @@ class UserDaoImplTest {
         assertEquals(2, userDao.findAll().size());
 
         User user3 = createUser(
+                "Bobs",
                 "mail@mail.com",
                 "Bob",
                 "Ross",
@@ -85,9 +88,10 @@ class UserDaoImplTest {
         assertEquals(3, userDao.findAll().size());
     }
 
-    private User createUser(String email, String name, String surname, String address) {
+    private User createUser(String login, String email, String name, String surname, String address) {
         User user = new User();
         user.setEmail(email);
+        user.setLogin(login);
         user.setName(name);
         user.setSurname(surname);
         user.setAddress(address);

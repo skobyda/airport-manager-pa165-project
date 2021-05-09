@@ -1,16 +1,16 @@
 package cz.fi.muni.pa165.project.service;
 
-
 import com.github.dozermapper.core.Mapper;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Petr Hendrych, Jozef Vanický
+ * @author Petr Hendrych, Jozef Vanický, Michal Zelenák
  * @created 28.04.2021
  * @project airport-manager
  **/
+
 public interface BeanMappingService {
 
     /**

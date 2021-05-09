@@ -13,6 +13,14 @@ import java.util.List;
 public interface UserFacade {
 
     /**
+     * Method to register user.
+     *
+     * @param user - {@Code User} object
+     * @param password - unencrypted user's password
+     */
+    void registerUser(UserDTO user, String password);
+
+    /**
      * Method to get user by given id.
      *
      * @param id - id of {@Code User}

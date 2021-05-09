@@ -41,7 +41,20 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        user = createUser(1L, "mail@mail.com", "John", "Dean", "Street 2");
+        user = createUser(
+                1L,
+                "mail@mail.com",
+                "frenchFry8",
+                "John",
+                "Dean",
+                "Street 2"
+        );
+    }
+
+    @Test
+    void registerUserTest() {
+        userService.registerUser(user, "frenchFry8");
+        verify(userDao).create(user);
     }
 
     @Test
@@ -59,10 +72,13 @@ class UserServiceImplTest {
         verify(userDao, times(2)).findAll();
     }
 
-    @Disabled
     @Test
     void authenticateTest() {
-        // TODO implement authentication
+        userService.registerUser(user, "frenchFry8");
+
+        boolean authenticated = userService.authenticate(user, "frenchFry8");
+
+        assertTrue(authenticated);
     }
 
     @Test
@@ -85,11 +101,12 @@ class UserServiceImplTest {
         verify(userDao).findUserByEmail("mail@mail.com");
     }
 
-    private static User createUser(Long id, String email, String name, String surname, String address) {
+    private User createUser(Long id, String email, String password, String name, String surname, String address) {
         User user = new User();
 
         user.setId(id);
         user.setEmail(email);
+        user.setPasswordHash(encoder.encode(password));
         user.setName(name);
         user.setSurname(surname);
         user.setAddress(address);

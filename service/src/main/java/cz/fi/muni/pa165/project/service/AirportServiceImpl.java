@@ -1,7 +1,6 @@
 package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.dao.AirportDao;
-import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import java.util.List;
  @created 27/04/2021
  @project airport-manager
  **/
+
 @Service
 public class AirportServiceImpl implements AirportService {
 

@@ -9,7 +9,16 @@ import java.util.List;
  * @created 04.05.2021
  * @project airport-manager
  **/
+
 public interface UserService {
+
+    /**
+     * Method to register new user.
+     *
+     * @param u - {@Code User} object
+     * @param password - unencrypted password
+     */
+    void registerUser(User u, String password);
 
     /**
      * Method to get all {@Code User} entities.
