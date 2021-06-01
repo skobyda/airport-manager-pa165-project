@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.service;
 
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public interface StewardService {
      *
      * @return - list of {@code Steward} entities
      */
-    List<Steward> findAll();
+    List<Steward> findAll(StewardFilterDTO filter);
 
     /**
      * Method to find list of all {@code Steward} entities by it's firstName.

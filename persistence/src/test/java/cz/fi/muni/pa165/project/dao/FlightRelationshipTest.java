@@ -1,6 +1,6 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
@@ -11,8 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashSet;
@@ -24,9 +27,11 @@ import java.util.Set;
  * @project airport-manager
  **/
 
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 public class FlightRelationshipTest {
+
     private Airplane airplane1;
     private Airplane airplane2;
     private Flight flight1;
@@ -37,81 +42,75 @@ public class FlightRelationshipTest {
     private Steward steward2;
 
     @Autowired
-    private FlightDaoImpl flightDao = new FlightDaoImpl();
+    private FlightDao flightDao = new FlightDaoImpl();
 
-    @Autowired
-    private AirportDaoImpl airportDao = new AirportDaoImpl();
-
-    @Autowired
-    private AirplaneDaoImpl airplaneDao = new AirplaneDaoImpl();
-
-    @Autowired
-    private StewardDaoImpl stewardDao = new StewardDaoImpl();
+    @PersistenceContext
+    EntityManager em;
 
     @BeforeEach
-    void setup(){
+    void setup() {
 
         airplane1 = createAirplane("RandomAirplaneName3", 100, AirplaneType.JET);
         airplane2 = createAirplane("RandomAirplaneName4", 892, AirplaneType.TURBOPROP);
 
-        airport1 = createAirport("SAE","Dubai airport","Dubai");
-        airport2 = createAirport("USA","New Your airport","New York");
+        airport1 = createAirport("SAE", "Dubai airport", "Dubai");
+        airport2 = createAirport("USA", "New Your airport", "New York");
 
-        steward1 = createSteward("SVK","123","Anna","Novakova");
-        steward2 = createSteward("CZK","124","Janka","Jandova");
+        steward1 = createSteward("SVK", "123", "Anna", "Novakova");
+        steward2 = createSteward("CZK", "124", "Janka", "Jandova");
 
         String flight1Code = "NVL185";
         flight1 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), flight1Code);
 
         String flight2Code = "PDL834";
-        flight2 = createFlight(LocalDate.of(2020, Month.JANUARY, 2),LocalDate.of(2020, Month.JANUARY, 2), flight2Code);
+        flight2 = createFlight(LocalDate.of(2020, Month.JANUARY, 2), LocalDate.of(2020, Month.JANUARY, 2), flight2Code);
 
     }
 
     @Test
-    void flightAirplaneSimpleRelationship(){
+    void flightAirplaneSimpleRelationship() {
         flight1.setAirplane(airplane1);
         flight1.setAirplane(airplane2);
         flightDao.update(flight1);
 
         Assertions.assertEquals(flight1.getAirplane(), airplane2);
-        Assertions.assertEquals(1,airplane2.getFlights().size());
+        Assertions.assertEquals(1, airplane2.getFlights().size());
     }
 
     @Test
-    void airplaneArrayOfFlights(){
+    void airplaneArrayOfFlights() {
         flight1.setAirplane(airplane2);
         flight2.setAirplane(airplane2);
         flightDao.update(flight1);
         flightDao.update(flight2);
-        Assertions.assertEquals(2,airplane2.getFlights().size());
+        Assertions.assertEquals(2, airplane2.getFlights().size());
     }
 
     @Test
-    void flightAirportSimpleRelationship(){
+    void flightAirportSimpleRelationship() {
         flight1.setOriginAirport(airport1);
         flight1.setDestinationAirport(airport2);
         flightDao.update(flight1);
         Assertions.assertEquals(flight1.getOriginAirport(), airport1);
         Assertions.assertEquals(flight1.getDestinationAirport(), airport2);
-        Assertions.assertEquals(1,airport1.getDepartureFlights().size());
-        Assertions.assertEquals(1,airport2.getArrivalFlights().size());
+        Assertions.assertEquals(1, airport1.getDepartureFlights().size());
+        Assertions.assertEquals(1, airport2.getArrivalFlights().size());
     }
 
     @Test
-    void flightAirportArraysRelationship(){
+    void flightAirportArraysRelationship() {
         flight1.setOriginAirport(airport1);
         flight1.setDestinationAirport(airport2);
         flight2.setOriginAirport(airport1);
         flight2.setDestinationAirport(airport2);
         flightDao.update(flight1);
         flightDao.update(flight2);
-        Assertions.assertEquals(2,airport1.getDepartureFlights().size());
-        Assertions.assertEquals(2,airport2.getArrivalFlights().size());
+        Assertions.assertEquals(2, airport1.getDepartureFlights().size());
+        Assertions.assertEquals(2, airport2.getArrivalFlights().size());
     }
 
     @Test
-    void flightStewardSimpleRelationship(){
+    void flightStewardSimpleRelationship() {
         flight1.addSteward(steward1);
         flight1.addSteward(steward2);
         flightDao.update(flight1);
@@ -122,7 +121,7 @@ public class FlightRelationshipTest {
     }
 
     @Test
-    void setStewardsTest(){
+    void setStewardsTest() {
         Set<Steward> stewards = new HashSet<>();
         stewards.add(steward1);
         stewards.add(steward2);
@@ -144,7 +143,7 @@ public class FlightRelationshipTest {
         flight.setDeparture(departure);
         flight.setArrival(arrival);
         flight.setFlightCode(flightCode);
-        flightDao.create(flight);
+        em.persist(flight);
         return flight;
     }
 
@@ -153,16 +152,16 @@ public class FlightRelationshipTest {
         airplane.setName(airplaneName);
         airplane.setCapacity(capacity);
         airplane.setType(airplaneType);
-        airplaneDao.create(airplane);
+        em.persist(airplane);
         return airplane;
     }
 
-    private Airport createAirport(String country, String name, String city){
-        Airport newAirport= new Airport();
+    private Airport createAirport(String country, String name, String city) {
+        Airport newAirport = new Airport();
         newAirport.setCity(city);
         newAirport.setCountry(country);
         newAirport.setName(name);
-        airportDao.create(newAirport);
+        em.persist(newAirport);
         return newAirport;
     }
 
@@ -176,7 +175,7 @@ public class FlightRelationshipTest {
         steward.setPassportNumber(passportNumber);
         steward.setFirstName(firstName);
         steward.setLastName(lastName);
-        stewardDao.create(steward);
+        em.persist(steward);
         return steward;
     }
 

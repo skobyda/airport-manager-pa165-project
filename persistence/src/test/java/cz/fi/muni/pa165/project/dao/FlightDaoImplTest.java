@@ -1,6 +1,6 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
@@ -8,7 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
@@ -22,18 +25,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project airport-manager
  **/
 
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class FlightDaoImplTest {
 
     @Autowired
-    private FlightDaoImpl flightDao;
+    private FlightDao flightDao;
 
-    @Autowired
-    private AirportDaoImpl airportDao;
-
-    @Autowired
-    private AirplaneDaoImpl airplaneDao;
+    @PersistenceContext
+    EntityManager em;
 
     private Flight flightDestinationPrague;
     private Flight flightDestinationVienna;
@@ -59,19 +60,19 @@ class FlightDaoImplTest {
         Prague = createAirport("Prague");
         Prague.setName("Prague Airport");
 
-        airportDao.create(Dubai);
-        airportDao.create(Vienna);
-        airportDao.create(Prague);
+        em.persist(Dubai);
+        em.persist(Vienna);
+        em.persist(Prague);
 
         Airbus = createAirplane("Airbus");
-        airplaneDao.create(Airbus);
+        em.persist(Airbus);
 
         Boeing = createAirplane("Boeing");
-        airplaneDao.create(Boeing);
+        em.persist(Boeing);
 
         createFlightsToEurope();
-        flightDao.create(flightDestinationPrague);
-        flightDao.create(flightDestinationVienna);
+        em.persist(flightDestinationPrague);
+        em.persist(flightDestinationVienna);
     }
 
     @Test
@@ -100,7 +101,7 @@ class FlightDaoImplTest {
                 Dubai,
                 Boeing,
                 flightCodeToDubai);
-        flightDao.create(flightDestinationDubai);
+        em.persist(flightDestinationDubai);
 
         allFlights = flightDao.findAll();
         assertEquals(3, allFlights.size());
@@ -117,7 +118,7 @@ class FlightDaoImplTest {
     void delete() {
         assertNotNull(flightDao.findById(flightDestinationPrague.getId()));
         flightDao.delete(flightDestinationPrague);
-        assertNull(flightDao.findById(flightDestinationPrague.getId()));
+        assertEquals(1,flightDao.findAll().size());
     }
 
     @Test

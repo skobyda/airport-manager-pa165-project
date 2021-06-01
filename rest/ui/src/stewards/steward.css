@@ -1,0 +1,61 @@
+.filter__card {
+    margin-bottom: 1em;
+}
+
+h5.card__title {
+    margin: 5px 0;
+}
+
+.filter__container {
+    display: grid;
+    grid-template-columns: repeat(3, 300px) auto;
+}
+
+.filter__inputs {
+    margin: 0 5px !important;
+}
+
+.filter__inputs:first-of-type {
+    margin-left: 0 !important;
+}
+
+
+.search-button {
+    justify-self: end;
+}
+
+/* List css */
+
+.list-header__container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Create modal css */
+
+.create-modal-inputs__container {
+    display: grid;
+    grid-gap: 15px;
+    grid-auto-flow: column;
+}
+
+.create-modal-inputs__container:last-of-type {
+    margin-top: 15px;
+}
+
+.dialog-actions__container {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.dialog-actions__container button {
+    margin: 10px 0;
+}
+
+.create__input {
+    width: 250px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

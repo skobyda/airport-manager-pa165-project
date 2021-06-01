@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.facade;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dto.UserAuthenticateDTO;
 import cz.fi.muni.pa165.project.dto.UserDTO;
 import cz.fi.muni.pa165.project.entity.User;
@@ -12,11 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +30,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class UserFacadeImplTest {
 
     @InjectMocks
@@ -45,9 +48,9 @@ class UserFacadeImplTest {
 
     @BeforeEach
     void setUp() {
-        user = createUser(1L, "xXJohnXx", "mail@mail.com", "John", "Dean", "Street 2");
+        user = createUser(1L, "mail@mail.com", "John", "Dean", "Street 2");
         userDTO = createUserDTO(1L, user.getEmail(), user.getName(), user.getSurname(), user.getAddress());
-        userAuthenticateDTO = createUserAuthenticateDTO(1L, "hranolky8");
+        userAuthenticateDTO = createUserAuthenticateDTO("mail@example.com", "hranolky8");
     }
 
     @Test
@@ -102,7 +105,7 @@ class UserFacadeImplTest {
 
     @Test
     void authenticateTest() {
-        when(userService.findUserById(1L)).thenReturn(user);
+        when(userService.findUserByEmail("mail@example.com")).thenReturn(user);
         when(userService.authenticate(user, "hranolky8")).thenReturn(true);
 
         boolean authenticated = userFacade.authenticate(userAuthenticateDTO);
@@ -110,11 +113,10 @@ class UserFacadeImplTest {
         assertTrue(authenticated);
     }
 
-    private static User createUser(Long id, String login, String email, String name, String surname, String address) {
+    private static User createUser(Long id, String email, String name, String surname, String address) {
         User user = new User();
 
         user.setId(id);
-        user.setLogin(login);
         user.setEmail(email);
         user.setName(name);
         user.setSurname(surname);
@@ -135,10 +137,10 @@ class UserFacadeImplTest {
         return user;
     }
 
-    private static UserAuthenticateDTO createUserAuthenticateDTO(Long id, String password) {
+    private static UserAuthenticateDTO createUserAuthenticateDTO(String email, String password) {
         UserAuthenticateDTO user = new UserAuthenticateDTO();
 
-        user.setId(id);
+        user.setEmail(email);
         user.setPassword(password);
 
         return user;

@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 /**
  * @author Simon Kobyda
@@ -30,7 +32,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 public class AirportFacadeTest {
+
     @Autowired
     @InjectMocks
     private AirportFacadeImpl airportFacade;
@@ -48,7 +52,7 @@ public class AirportFacadeTest {
     AirportCreateDTO airportCreateDTOVienna;
 
     @BeforeEach
-    public void setUp()  {
+    public void setUp() {
         Long id = 666L;
         String name = "Vienna International Airport";
         String city = "Schwechat";
@@ -82,7 +86,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testFindAll(){
+    public void testFindAll() {
         when(airportService.findAll()).thenReturn(List.of(airportVienna));
         airportFacade.findAll();
         verify(airportService, times(1)).findAll();
@@ -91,7 +95,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testFindById(){
+    public void testFindById() {
         when(airportService.findById(666L)).thenReturn(airportVienna);
         airportFacade.findById(666L);
 
@@ -100,7 +104,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testFindByName(){
+    public void testFindByName() {
         when(airportService.findByName("Vienna International Airport")).thenReturn(List.of(airportVienna));
         airportFacade.findByName("Vienna International Airport");
 
@@ -109,7 +113,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testFindByCountry(){
+    public void testFindByCountry() {
         when(airportService.findByCountry("AT")).thenReturn(List.of(airportVienna));
         airportFacade.findByCountry("AT");
 
@@ -118,7 +122,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testFindByCity(){
+    public void testFindByCity() {
         when(airportService.findByCity("Schwechat")).thenReturn(List.of(airportVienna));
         airportFacade.findByCity("Schwechat");
 
@@ -127,7 +131,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         airportDTOVienna.setName("Brand new airport name");
         airportFacade.update(airportDTOVienna);
 
@@ -142,7 +146,7 @@ public class AirportFacadeTest {
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         airportFacade.delete(airportDTOVienna.getId());
         verify(airportService, times(1)).delete(airportVienna.getId());
     }

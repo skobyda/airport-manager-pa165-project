@@ -1,13 +1,16 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,12 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @project airport-manager
  **/
 
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class UserDaoImplTest {
 
     @Autowired
-    private UserDaoImpl userDao;
+    private UserDao userDao;
+
+    @PersistenceContext
+    EntityManager em;
 
     private User user1;
     private User user2;
@@ -31,7 +38,6 @@ class UserDaoImplTest {
     @BeforeEach
     void setUp() {
         user1 = createUser(
-                "John69",
                 "john.dean@gmail.com",
                 "John",
                 "Dean",
@@ -39,15 +45,14 @@ class UserDaoImplTest {
         );
 
         user2 = createUser(
-                "Linda123",
                 "linda.huge@hotmail.com",
                 "Linda",
                 "Huge",
                 "Far way street 4"
         );
 
-        userDao.create(user1);
-        userDao.create(user2);
+        em.persist(user1);
+        em.persist(user2);
     }
 
     @Test
@@ -77,7 +82,6 @@ class UserDaoImplTest {
         assertEquals(2, userDao.findAll().size());
 
         User user3 = createUser(
-                "Bobs",
                 "mail@mail.com",
                 "Bob",
                 "Ross",
@@ -88,10 +92,9 @@ class UserDaoImplTest {
         assertEquals(3, userDao.findAll().size());
     }
 
-    private User createUser(String login, String email, String name, String surname, String address) {
+    private User createUser(String email, String name, String surname, String address) {
         User user = new User();
         user.setEmail(email);
-        user.setLogin(login);
         user.setName(name);
         user.setSurname(surname);
         user.setAddress(address);

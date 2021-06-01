@@ -3,6 +3,7 @@ package cz.fi.muni.pa165.project.service;
 import cz.fi.muni.pa165.project.dao.AirplaneDao;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,17 +34,32 @@ public class AirplaneServiceImpl implements AirplaneService {
 
     @Override
     public void create(Airplane airplane) {
-        airplaneDao.create(airplane);
+
+        try {
+            airplaneDao.create(airplane);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Airplane entity already exists in system");
+        }
     }
 
     @Override
     public void delete(Long id) {
-        airplaneDao.delete(airplaneDao.findById(id));
+
+        try {
+            airplaneDao.delete(airplaneDao.findById(id));
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Airplane with this entity does not exists");
+        }
     }
 
     @Override
     public void update(Airplane airplane) {
-        airplaneDao.update(airplane);
+
+        try {
+            airplaneDao.update(airplane);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Airplane with same ID does not exists in system");
+        }
     }
 
     @Override

@@ -7,9 +7,9 @@ import cz.fi.muni.pa165.project.dto.FlightDTO;
 import cz.fi.muni.pa165.project.dto.AirportCreateDTO;
 
 /**
- @author Simon Kobyda
- @created 27/04/2021
- @project airport-manager
+ * @author Simon Kobyda
+ * @created 27/04/2021
+ * @project airport-manager
  **/
 public interface AirportFacade {
 

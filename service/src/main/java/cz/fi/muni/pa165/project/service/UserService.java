@@ -1,6 +1,7 @@
 package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.entity.User;
+import cz.fi.muni.pa165.project.enums.UserRole;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserService {
     /**
      * Method to register new user.
      *
-     * @param u - {@Code User} object
+     * @param u        - {@Code User} object
      * @param password - unencrypted password
      */
     void registerUser(User u, String password);
@@ -30,7 +31,7 @@ public interface UserService {
     /**
      * Method to authenticate {@Code User} trying to log in.
      *
-     * @param u - given {@Code User} entity
+     * @param u        - given {@Code User} entity
      * @param password - unencrypted password
      * @return - boolean depending on validation result
      */
@@ -51,4 +52,12 @@ public interface UserService {
      * @return - {@Code User} entity
      */
     User findUserByEmail(String email);
+
+    /**
+     * Method to authenticate role of {@Code User} trying to log in.
+     * @param basicAuth - basic authorization user & pass
+     * @param role - represents role of the user
+     * @return
+     */
+    boolean verifyRole(String basicAuth, UserRole role);
 }

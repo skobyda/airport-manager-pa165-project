@@ -3,6 +3,7 @@ package cz.fi.muni.pa165.project.service;
 import cz.fi.muni.pa165.project.dao.AirportDao;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- @author Simon Kobyda
- @created 27/04/2021
- @project airport-manager
+ * @author Simon Kobyda
+ * @created 27/04/2021
+ * @project airport-manager
  **/
 
 @Service
@@ -23,17 +24,29 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public void create(Airport airport) {
-        airportDao.create(airport);
+        try {
+            airportDao.create(airport);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Entity is not in a correct format or already exists");
+        }
     }
 
     @Override
     public void update(Airport airport) {
-        airportDao.update(airport);
+        try {
+            airportDao.update(airport);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Airport with this ID does not exists");
+        }
     }
 
     @Override
     public void delete(Long id) {
-        airportDao.delete(airportDao.findById(id));
+        try {
+            airportDao.delete(airportDao.findById(id));
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Airport with this ID does not exists in system");
+        }
     }
 
     @Override

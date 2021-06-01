@@ -3,9 +3,9 @@ package cz.fi.muni.pa165.project.dto;
 import java.util.*;
 
 /**
- @author Simon Kobyda
- @created 27/04/2021
- @project airport-manager
+ * @author Simon Kobyda
+ * @created 27/04/2021
+ * @project airport-manager
  **/
 public class AirportDTO {
 

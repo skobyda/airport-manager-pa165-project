@@ -2,6 +2,7 @@ package cz.fi.muni.pa165.project.facade;
 
 import cz.fi.muni.pa165.project.dto.StewardCreateDTO;
 import cz.fi.muni.pa165.project.dto.StewardDTO;
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public interface StewardFacade {
      *
      * @return - returns list of {@code StewardDTO} entities
      */
-    List<StewardDTO> findAll();
+    List<StewardDTO> findAll(StewardFilterDTO filter);
 
     /**
      * Method to find list of all {@code StewardDTO} entities based on firstName.

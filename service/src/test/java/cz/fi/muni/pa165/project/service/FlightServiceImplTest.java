@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.service;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dao.AirplaneDao;
 import cz.fi.muni.pa165.project.dao.AirportDao;
 import cz.fi.muni.pa165.project.dao.FlightDao;
@@ -9,6 +10,7 @@ import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -33,6 +36,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class FlightServiceImplTest {
 
     Flight flight1;
@@ -94,8 +98,8 @@ class FlightServiceImplTest {
 
     @Test
     void findAll() {
-        when(flightDao.findAll()).thenReturn(List.of(flight1,flight2));
-        assertEquals(flightService.findAll(),List.of(flight1,flight2));
+        when(flightDao.findAll()).thenReturn(List.of(flight1, flight2));
+        assertEquals(flightService.findAll(), List.of(flight1, flight2));
     }
 
     @Test
@@ -110,12 +114,12 @@ class FlightServiceImplTest {
         flightC.setDestinationAirport(airport1);
         flightC.setOriginAirport(airport2);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 4),null,null,null);
-        assertEquals(List.of(flightC),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 4), null, null, null);
+        assertEquals(List.of(flightC), filteredFlights);
     }
 
     @Test
@@ -130,12 +134,12 @@ class FlightServiceImplTest {
         flightC.setDestinationAirport(airport1);
         flightC.setOriginAirport(airport2);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(null,null,airport1.getId(),null);
-        assertEquals(List.of(flightA,flightC),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(null, null, airport1.getId(), null);
+        assertEquals(List.of(flightA, flightC), filteredFlights);
     }
 
     @Test
@@ -150,12 +154,12 @@ class FlightServiceImplTest {
         flightC.setDestinationAirport(airport1);
         flightC.setOriginAirport(airport2);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(null,null,null,airport1.getId());
-        assertEquals(List.of(flightB),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(null, null, null, airport1.getId());
+        assertEquals(List.of(flightB), filteredFlights);
     }
 
     @Test
@@ -170,12 +174,12 @@ class FlightServiceImplTest {
         flightC.setDestinationAirport(airport1);
         flightC.setOriginAirport(airport2);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(null,LocalDate.of(2020, Month.OCTOBER, 4),null,null);
-        assertEquals(List.of(flightA),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(null, LocalDate.of(2020, Month.OCTOBER, 4), null, null);
+        assertEquals(List.of(flightA), filteredFlights);
     }
 
     @Test
@@ -198,12 +202,12 @@ class FlightServiceImplTest {
         flightE.setOriginAirport(airport2);
         flightE.setDestinationAirport(airport1);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3),LocalDate.of(2020, Month.OCTOBER, 5),airport1.getId(),airport2.getId());
-        assertEquals(List.of(flightC),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 5), airport1.getId(), airport2.getId());
+        assertEquals(List.of(flightC), filteredFlights);
     }
 
     @Test
@@ -218,16 +222,16 @@ class FlightServiceImplTest {
         flightC.setDestinationAirport(airport1);
         flightC.setOriginAirport(airport2);
 
-        when(flightDao.findAll()).thenReturn(List.of(flightA,flightB,flightC));
+        when(flightDao.findAll()).thenReturn(List.of(flightA, flightB, flightC));
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3),LocalDate.of(2020, Month.OCTOBER, 5),null,null);
-        assertEquals(List.of(flightB),filteredFlights);
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 5), null, null);
+        assertEquals(List.of(flightB), filteredFlights);
     }
 
     @Test
-    void create() throws Exception {
+    void create() throws AirportManagerException {
         Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 4), LocalDate.of(2020, Month.MARCH, 4), "CDL186", 3L);
         flight3.setAirplane(airplane);
 
@@ -237,16 +241,16 @@ class FlightServiceImplTest {
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
         Flight updatedFlight = flightService.create(flight1);
-        assertEquals(updatedFlight,flight1);
-        verify(flightDao,times(1)).findById(flight1.getId());
-        verify(flightDao,times(1)).create(flight1);
-        verify(airplaneDao,times(1)).findById(airplane.getId());
-        verify(stewardDao,times(1)).findById(steward1.getId());
-        verify(stewardDao,times(1)).findById(steward2.getId());
+        assertEquals(updatedFlight, flight1);
+        verify(flightDao, times(1)).findById(flight1.getId());
+        verify(flightDao, times(1)).create(flight1);
+        verify(airplaneDao, times(1)).findById(airplane.getId());
+        verify(stewardDao, times(1)).findById(steward1.getId());
+        verify(stewardDao, times(1)).findById(steward2.getId());
     }
 
     @Test
-    void update() throws Exception {
+    void update() throws AirportManagerException {
         Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 4), LocalDate.of(2020, Month.MARCH, 4), "CDL186", 3L);
         flight3.setAirplane(airplane);
 
@@ -256,13 +260,13 @@ class FlightServiceImplTest {
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
         Flight updatedFlight = flightService.update(flight1);
-        assertEquals(updatedFlight,flight1);
+        assertEquals(updatedFlight, flight1);
 
-        verify(flightDao,times(2)).findById(flight1.getId());
-        verify(flightDao,times(1)).update(flight1);
-        verify(airplaneDao,times(1)).findById(airplane.getId());
-        verify(stewardDao,times(1)).findById(steward1.getId());
-        verify(stewardDao,times(1)).findById(steward2.getId());
+        verify(flightDao, times(1)).findById(flight1.getId());
+        verify(flightDao, times(1)).update(flight1);
+        verify(airplaneDao, times(1)).findById(airplane.getId());
+        verify(stewardDao, times(1)).findById(steward1.getId());
+        verify(stewardDao, times(1)).findById(steward2.getId());
     }
 
     @Test
@@ -278,8 +282,8 @@ class FlightServiceImplTest {
         when(airplaneDao.findById(1L)).thenReturn(airplane);
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
-        Exception exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
     }
 
     @Test
@@ -297,8 +301,8 @@ class FlightServiceImplTest {
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
-        Exception exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
     }
 
@@ -314,8 +318,8 @@ class FlightServiceImplTest {
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
-        Exception exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
     }
 
     @Test
@@ -324,8 +328,8 @@ class FlightServiceImplTest {
         when(flightDao.findById(flight1.getId())).thenReturn(flight1);
         when(airplaneDao.findById(1L)).thenReturn(airplane);
 
-        Exception exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Origin airport and destination Airport cannot be same",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Origin airport and destination Airport cannot be same", exception.getMessage());
     }
 
     @Test
@@ -343,12 +347,12 @@ class FlightServiceImplTest {
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
-        Exception exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
     }
 
     @Test
-    void stewardExceptionDatesTest(){
+    void stewardExceptionDatesTest() {
         Airplane airplane2 = createAirplane("RandomAirpldsfds3", 100, AirplaneType.JET, 2L);
         when(flightDao.findById(flight1.getId())).thenReturn(flight1);
         when(airplaneDao.findById(1L)).thenReturn(airplane);
@@ -363,26 +367,26 @@ class FlightServiceImplTest {
         // start before end in middle
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 1));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 3));
-        Exception exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start before end after
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 1));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 5));
-        exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start in the middle end in the middle
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 3));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 3));
-        exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start in the middle end after
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 3));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 5));
-        exception = assertThrows(Exception.class, () -> flightService.create(flight3));
-        assertEquals("Steward is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
+        assertEquals("Steward is already on another flight at that time", exception.getMessage());
     }
 
     @Test
@@ -398,26 +402,26 @@ class FlightServiceImplTest {
         //start in middle, end after
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 2));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 4));
-        Exception exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        Exception exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start in middle, end in middle
         flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 2));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 2));
-        exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start before, end in middle
         flight1.setDeparture(LocalDate.of(2020, Month.AUGUST, 29));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 2));
-        exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start before, end after
         flight1.setDeparture(LocalDate.of(2020, Month.AUGUST, 29));
         flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 6));
-        exception = assertThrows(Exception.class, () -> flightService.update(flight1));
-        assertEquals("Airplane is already on another flight at that time",exception.getMessage());
+        exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
+        assertEquals("Airplane is already on another flight at that time", exception.getMessage());
     }
 
 
@@ -426,7 +430,7 @@ class FlightServiceImplTest {
         when(flightDao.findById(1L)).thenReturn(flight1);
         flightService.delete(flight1.getId());
         verify(flightDao, times(1)).delete(flight1);
-        verify(flightDao,times(1)).findById(flight1.getId());
+        verify(flightDao, times(1)).findById(flight1.getId());
     }
 
     @Test
@@ -435,7 +439,7 @@ class FlightServiceImplTest {
         when(stewardDao.findById(steward1.getId())).thenReturn(steward1);
         flightService.addSteward(flight1.getId(), steward1.getId());
         verify(flightDao, times(1)).findById(flight1.getId());
-        verify(stewardDao,times(1)).findById(steward1.getId());
+        verify(stewardDao, times(1)).findById(steward1.getId());
     }
 
     @Test
@@ -444,7 +448,7 @@ class FlightServiceImplTest {
         when(stewardDao.findById(steward1.getId())).thenReturn(steward1);
         flightService.removeSteward(flight1.getId(), steward1.getId());
         verify(flightDao, times(1)).findById(flight1.getId());
-        verify(stewardDao,times(1)).findById(steward1.getId());
+        verify(stewardDao, times(1)).findById(steward1.getId());
     }
 
     private Flight createFlight(LocalDate departure, LocalDate arrival, String flightCode, Long id) {

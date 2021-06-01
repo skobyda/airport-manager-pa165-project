@@ -1,17 +1,17 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,14 +22,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project airport-manager
  **/
 
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class AirplaneDaoImplTest {
+
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    private AirplaneDaoImpl airplaneDao;
+    private AirplaneDao airplaneDao;
 
     private Airplane airplane1;
     private Airplane airplane2;
@@ -65,6 +67,16 @@ class AirplaneDaoImplTest {
     }
 
     @Test
+    void create() {
+        Airplane testAirplane = new Airplane();
+        testAirplane.setName("Name");
+        airplaneDao.create(testAirplane);
+        List<Airplane> found = airplaneDao.findAll();
+        assertEquals(found.size(), 5);
+    }
+
+
+    @Test
     void findById() {
         Airplane found = airplaneDao.findById(airplane1.getId());
         assertEquals(found.getName(), "RandomAirplaneName1");
@@ -76,7 +88,7 @@ class AirplaneDaoImplTest {
     void delete() {
         assertNotNull(airplaneDao.findById(airplane3.getId()));
         airplaneDao.delete(airplane3);
-        assertNull(airplaneDao.findById(airplane3.getId()));
+        assertEquals(3,airplaneDao.findAll().size());
     }
 
     @Test
@@ -121,8 +133,8 @@ class AirplaneDaoImplTest {
 
     @Test
     void findByCapacity() {
-        assertEquals(airplaneDao.findByCapacity(2).size(),1);
-        assertEquals(airplaneDao.findByCapacity(0).size(),0);
-        assertEquals(airplaneDao.findByCapacity(892).size(),2);
+        assertEquals(airplaneDao.findByCapacity(2).size(), 1);
+        assertEquals(airplaneDao.findByCapacity(0).size(), 0);
+        assertEquals(airplaneDao.findByCapacity(892).size(), 2);
     }
 }

@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.util.*;
 
 /**
- @author Simon Kobyda
- @created 07/04/2021
- @project airport-manager
+ * @author Simon Kobyda
+ * @created 07/04/2021
+ * @project airport-manager
  **/
 @Entity
 public class Airport {
@@ -92,7 +92,7 @@ public class Airport {
         String hashStr = name.concat(country.concat(city));
         int hash = 7;
         for (int i = 0; i < hashStr.length(); i++) {
-            hash = hash*31 + hashStr.charAt(i);
+            hash = hash * 31 + hashStr.charAt(i);
         }
 
         return hash;

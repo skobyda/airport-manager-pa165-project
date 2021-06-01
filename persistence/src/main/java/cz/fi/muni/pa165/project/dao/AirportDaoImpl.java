@@ -1,6 +1,7 @@
 package cz.fi.muni.pa165.project.dao;
 
 import cz.fi.muni.pa165.project.entity.Airport;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -31,7 +32,10 @@ public class AirportDaoImpl implements AirportDao {
 
     @Override
     public Airport findById(Long id) {
-        return em.find(Airport.class, id);
+        Airport airport = em.find(Airport.class, id);
+        if (airport == null)
+            throw new AirportManagerException("Airport entity with this id does not exists");
+        return airport;
     }
 
     @Override

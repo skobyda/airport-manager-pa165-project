@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dao.AirportDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 /**
  * @author Simon Kobyda
@@ -27,7 +29,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 public class AirportServiceTest {
+
     @Autowired
     @InjectMocks
     private AirportServiceImpl airportService;
@@ -40,7 +44,7 @@ public class AirportServiceTest {
     Airport airportPrague;
 
     @BeforeEach
-    public void setUp()  {
+    public void setUp() {
         airportVienna = new Airport();
         airportVienna.setId(666L);
         airportVienna.setName("Vienna International Airport");
@@ -93,8 +97,7 @@ public class AirportServiceTest {
     public void testFindByCountry() {
         when(airportDao.findByCountry("AT")).thenReturn(List.of(airportVienna));
 
-        List<Airport> airports = airportService.findByCountry("AT")
-                ;
+        List<Airport> airports = airportService.findByCountry("AT");
         Assertions.assertEquals(airports.size(), 1);
         Assertions.assertEquals(airports.get(0).getCountry(), "AT");
 
@@ -129,7 +132,9 @@ public class AirportServiceTest {
 
     @Test
     public void testUpdate() {
+        when(airportDao.findById(airportVienna.getId())).thenReturn(airportVienna);
         airportVienna.setName("Brand new name of Vienna airport");
+
         airportService.update(airportVienna);
 
         when(airportDao.findByName("Brand new name of Vienna airport")).thenReturn(List.of(airportVienna));

@@ -15,18 +15,20 @@ public interface BeanMappingService {
 
     /**
      * Mapping list of objects to class.
-     * @param objects - Collection of objects to be mapped to different class.
+     *
+     * @param objects    - Collection of objects to be mapped to different class.
      * @param mapToClass - Class to which objects are mapped.
-     * @param <T> - Generic type.
+     * @param <T>        - Generic type.
      * @return - Returns list of typed objects.
      */
     <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass);
 
     /**
      * Mapping object to class.
-     * @param u - Object to be mapped to different class.
+     *
+     * @param u          - Object to be mapped to different class.
      * @param mapToClass - Class to which object is mapped.
-     * @param <T> - Generic type.
+     * @param <T>        - Generic type.
      * @return - Returns typed object.
      */
     <T> T mapTo(Object u, Class<T> mapToClass);

@@ -1,14 +1,17 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,8 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * @project airport-manager
  **/
 
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class AirportDaoImplTest {
 
     private Flight flight123;
@@ -33,20 +37,21 @@ class AirportDaoImplTest {
     private Airport WashingtonAirport;
     private Airport toUpdateAirport;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     private AirportDao airportDao;
 
-    @Autowired
-    private FlightDao flightDAO;
 
     @BeforeEach
     void setUp() {
-        flight123 = createFlight(LocalDate.of(2021,11,9),LocalDate.of(2021,11,9),"JAR-123");
-        flight125 = createFlight(LocalDate.of(2021,11,8),LocalDate.of(2021,11,8),"JAR-125");
-        flight127 = createFlight(LocalDate.of(2021,12,8),LocalDate.of(2021,12,8),"JAR-127");
-        flightDAO.create(flight123);
-        flightDAO.create(flight125);
-        flightDAO.create(flight127);
+        flight123 = createFlight(LocalDate.of(2021, 11, 9), LocalDate.of(2021, 11, 9), "JAR-123");
+        flight125 = createFlight(LocalDate.of(2021, 11, 8), LocalDate.of(2021, 11, 8), "JAR-125");
+        flight127 = createFlight(LocalDate.of(2021, 12, 8), LocalDate.of(2021, 12, 8), "JAR-127");
+        em.persist(flight123);
+        em.persist(flight125);
+        em.persist(flight127);
 
         KennedyAirport = new Airport();
         WashingtonAirport = new Airport();
@@ -64,16 +69,25 @@ class AirportDaoImplTest {
         toUpdateAirport.setName("Funny airport");
         toUpdateAirport.setCity("New York");
 
-        airportDao.create(KennedyAirport);
-        airportDao.create(WashingtonAirport);
-        airportDao.create(toUpdateAirport);
+        em.persist(KennedyAirport);
+        em.persist(WashingtonAirport);
+        em.persist(toUpdateAirport);
     }
 
     @Test
     void findAll() {
         List<Airport> airports = airportDao.findAll();
-        assertEquals(3,airports.size());
+        assertEquals(3, airports.size());
     }
+
+    @Test
+    void create() {
+        Airport testAirport = new Airport();
+        testAirport.setName("Sliac");
+        airportDao.create(testAirport);
+        assertEquals(airportDao.findAll().size(), 4);
+    }
+
 
     @Test
     void findById() {
@@ -86,25 +100,25 @@ class AirportDaoImplTest {
     @Test
     void findByName() {
         List<Airport> airportByName = airportDao.findByName(KennedyAirport.getName());
-        assertEquals("Kennedy airport",airportByName.get(0).getName());
-        assertEquals("New York",airportByName.get(0).getCity());
-        assertEquals( "USA",airportByName.get(0).getCountry());
+        assertEquals("Kennedy airport", airportByName.get(0).getName());
+        assertEquals("New York", airportByName.get(0).getCity());
+        assertEquals("USA", airportByName.get(0).getCountry());
     }
 
     @Test
     void findByCity() {
         List<Airport> airportByCity = airportDao.findByCity(KennedyAirport.getCity());
-        assertEquals("Kennedy airport",airportByCity.get(0).getName());
-        assertEquals("New York",airportByCity.get(0).getCity());
-        assertEquals( "USA",airportByCity.get(0).getCountry());
+        assertEquals("Kennedy airport", airportByCity.get(0).getName());
+        assertEquals("New York", airportByCity.get(0).getCity());
+        assertEquals("USA", airportByCity.get(0).getCountry());
     }
 
     @Test
     void findByCountry() {
         List<Airport> airportByCountry = airportDao.findByCountry(KennedyAirport.getCountry());
-        assertEquals("Kennedy airport",airportByCountry.get(0).getName());
-        assertEquals("New York",airportByCountry.get(0).getCity());
-        assertEquals( "USA",airportByCountry.get(0).getCountry());
+        assertEquals("Kennedy airport", airportByCountry.get(0).getName());
+        assertEquals("New York", airportByCountry.get(0).getCity());
+        assertEquals("USA", airportByCountry.get(0).getCountry());
     }
 
     @Test
@@ -114,10 +128,10 @@ class AirportDaoImplTest {
         ToDeleteAirport.setCountry("AU");
         ToDeleteAirport.setName("LincolnAirport");
         ToDeleteAirport.setCity("Vienna");
-        airportDao.create(ToDeleteAirport);
+        em.persist(ToDeleteAirport);
 
         airportDao.delete(ToDeleteAirport);
-        assertEquals(3,airportDao.findAll().size());
+        assertEquals(3, airportDao.findAll().size());
     }
 
     @Test
@@ -127,9 +141,9 @@ class AirportDaoImplTest {
         toDeleteAirport2.setCountry("TUR");
         toDeleteAirport2.setName("LincolnAirport");
         toDeleteAirport2.setCity("Alma");
-        airportDao.create(toDeleteAirport2);
+        em.persist(toDeleteAirport2);
         airportDao.deleteById(toDeleteAirport2.getId());
-        assertEquals(3,airportDao.findAll().size());
+        assertEquals(3, airportDao.findAll().size());
     }
 
     private Flight createFlight(LocalDate arrival, LocalDate departure, String flightCode) {
