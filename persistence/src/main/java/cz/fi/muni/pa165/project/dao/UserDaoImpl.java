@@ -1,6 +1,7 @@
 package cz.fi.muni.pa165.project.dao;
 
 import cz.fi.muni.pa165.project.entity.User;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -32,7 +33,10 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(Long id) {
-        return em.find(User.class, id);
+        User user = em.find(User.class, id);
+        if (user == null)
+            throw new AirportManagerException("User entity with this id does not exists");
+        return user;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(User u){
+    public void update(User u) {
         em.merge(u);
     }
 

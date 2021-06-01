@@ -2,6 +2,7 @@ package cz.fi.muni.pa165.project.facade;
 
 import cz.fi.muni.pa165.project.dto.StewardCreateDTO;
 import cz.fi.muni.pa165.project.dto.StewardDTO;
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.service.BeanMappingService;
 import cz.fi.muni.pa165.project.service.StewardService;
@@ -47,8 +48,8 @@ public class StewardFacadeImpl implements StewardFacade {
     }
 
     @Override
-    public List<StewardDTO> findAll() {
-        return beanMappingService.mapTo(stewardService.findAll(), StewardDTO.class);
+    public List<StewardDTO> findAll(StewardFilterDTO filter) {
+        return beanMappingService.mapTo(stewardService.findAll(filter), StewardDTO.class);
     }
 
     @Override

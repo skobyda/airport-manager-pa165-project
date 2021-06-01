@@ -15,11 +15,11 @@ public class FlightDTO {
    private Long id;
    private LocalDate departure;
    private LocalDate arrival;
-   private Long originAirportId;
-   private Long destinationAirportId;
-   private Long airplaneId;
+   private AirportSimpleDTO originAirport;
+   private AirportSimpleDTO destinationAirport;
+   private AirplaneSimpleDTO airplane;
    private String flightCode;
-   private Set<StewardDTO> stewards = new HashSet<>();
+   private HashSet<StewardSimpleDTO> stewards = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -45,28 +45,37 @@ public class FlightDTO {
         this.arrival = arrival;
     }
 
-    public Long getOriginAirportId() {
-        return originAirportId;
+
+    public AirportSimpleDTO getOriginAirport() {
+        return originAirport;
     }
 
-    public void setOriginAirportId(Long originAirportId) {
-        this.originAirportId = originAirportId;
+    public void setOriginAirport(AirportSimpleDTO originAirport) {
+        this.originAirport = originAirport;
     }
 
-    public Long getDestinationAirportId() {
-        return destinationAirportId;
+    public AirportSimpleDTO getDestinationAirport() {
+        return destinationAirport;
     }
 
-    public void setDestinationAirportId(Long destinationAirportId) {
-        this.destinationAirportId = destinationAirportId;
+    public void setDestinationAirport(AirportSimpleDTO destinationAirport) {
+        this.destinationAirport = destinationAirport;
     }
 
-    public Long getAirplaneId() {
-        return airplaneId;
+    public AirplaneSimpleDTO getAirplane() {
+        return airplane;
     }
 
-    public void setAirplaneId(Long airplaneId) {
-        this.airplaneId = airplaneId;
+    public void setAirplane(AirplaneSimpleDTO airplane) {
+        this.airplane = airplane;
+    }
+
+    public HashSet<StewardSimpleDTO> getStewards() {
+        return stewards;
+    }
+
+    public void setStewards(HashSet<StewardSimpleDTO> stewards) {
+        this.stewards = stewards;
     }
 
     public String getFlightCode() {
@@ -77,13 +86,6 @@ public class FlightDTO {
         this.flightCode = flightCode;
     }
 
-    public Set<StewardDTO> getStewards() {
-        return stewards;
-    }
-
-    public void setStewards(Set<StewardDTO> stewards) {
-        this.stewards = stewards;
-    }
 
     @Override
     public boolean equals(Object o) {

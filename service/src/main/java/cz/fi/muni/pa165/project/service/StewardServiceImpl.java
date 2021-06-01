@@ -1,11 +1,15 @@
 package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.dao.StewardDao;
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Jozef Vanický
@@ -21,7 +25,12 @@ public class StewardServiceImpl implements StewardService {
 
     @Override
     public void create(Steward s) {
-        stewardDao.create(s);
+
+        try {
+            stewardDao.create(s);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Steward with this passport number already exists");
+        }
     }
 
     @Override
@@ -30,8 +39,8 @@ public class StewardServiceImpl implements StewardService {
     }
 
     @Override
-    public List<Steward> findAll() {
-        return stewardDao.findAll();
+    public List<Steward> findAll(StewardFilterDTO filter) {
+        return stewardDao.findAll(filter);
     }
 
     @Override
@@ -56,11 +65,38 @@ public class StewardServiceImpl implements StewardService {
 
     @Override
     public void update(Steward s) {
-        stewardDao.update(s);
+
+        try {
+            stewardDao.update(s);
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Steward with this ID does not exists");
+        }
     }
 
     @Override
     public void delete(Long id) {
-        stewardDao.delete(stewardDao.findById(id));
+        try {
+            stewardDao.delete(stewardDao.findById(id));
+        } catch (IllegalArgumentException e) {
+            throw new AirportManagerException("Steward entity does not exists in system");
+        }
+    }
+
+    private List<Steward> findWithFilter(StewardFilterDTO filter) {
+        List<Steward> result = new ArrayList<>();
+
+        if (filter.getFirstName() != null) {
+            result.addAll(stewardDao.findByFirstName(filter.getFirstName()));
+        }
+
+        if (filter.getLastName() != null) {
+            result.addAll(stewardDao.findByLastName(filter.getLastName()));
+        }
+
+        if (filter.getCountryCode() != null) {
+            result.addAll(stewardDao.findByCountryCode(filter.getCountryCode()));
+        }
+
+        return result.stream().distinct().collect(Collectors.toList());
     }
 }

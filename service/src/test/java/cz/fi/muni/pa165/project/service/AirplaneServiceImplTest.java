@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.service;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dao.AirplaneDao;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class AirplaneServiceImplTest {
 
     @MockBean
@@ -93,7 +96,7 @@ class AirplaneServiceImplTest {
     void updateTest() {
         boeing.setCapacity(100);
         boeing.setName("Boeing 2");
-
+        when(airplaneDao.findById(boeing.getId())).thenReturn(boeing);
         airplaneService.update(boeing);
 
         verify(airplaneDao).update(boeing);

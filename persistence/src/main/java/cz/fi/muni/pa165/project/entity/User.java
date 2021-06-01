@@ -21,9 +21,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private String login;
-
     private String passwordHash;
 
     @Column(nullable = false, unique = true)
@@ -55,14 +52,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getPasswordHash() {

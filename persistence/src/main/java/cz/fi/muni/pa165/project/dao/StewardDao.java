@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.dao;
 
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface StewardDao {
      *
      * @return - list of {@code Steward} entities
      */
-    List<Steward> findAll();
+    List<Steward> findAll(StewardFilterDTO filter);
 
     /**
      * Method to find list of all {@code Steward} entities by it's firstName.

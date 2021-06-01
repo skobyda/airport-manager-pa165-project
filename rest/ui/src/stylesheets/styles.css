@@ -1,0 +1,20 @@
+#my-table{width:100%; font-size:18px; text-align:left}
+#my-table td{width:33%;}
+#my-table th{width:33%;}
+.airplane-type {min-width: 120px}
+.MuiSelect-select.MuiSelect-select {padding-right: 50px !important}
+.MuiListItemText-multiline {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+.MuiListItemText-root {
+    margin-top: 3px !important;
+    margin-bottom: 2px !important;
+}
+.MuiTypography-body1 {
+    line-height: 1 !important;
+}
+.MuiListItem-root {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}

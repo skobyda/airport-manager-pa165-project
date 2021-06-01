@@ -1,5 +1,6 @@
 package cz.fi.muni.pa165.project.service;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dao.StewardDao;
 import cz.fi.muni.pa165.project.entity.Steward;
 import org.hibernate.service.spi.ServiceException;
@@ -11,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class StewardServiceImplTest {
 
     Steward steward;
@@ -39,7 +42,7 @@ class StewardServiceImplTest {
     StewardServiceImpl stewardService;
 
     @BeforeEach
-    void setUp() throws ServiceException{
+    void setUp() throws ServiceException {
         steward = new Steward();
         steward.setId(1L);
         steward.setFirstName("Jan");
@@ -70,14 +73,14 @@ class StewardServiceImplTest {
 
     @Test
     void findAll() {
-        when(stewardDao.findAll()).thenReturn(List.of(steward,steward2));
+        when(stewardDao.findAll(null)).thenReturn(List.of(steward, steward2));
 
-        List<Steward> tempList = stewardDao.findAll();
+        List<Steward> tempList = stewardDao.findAll(null);
         assertEquals(2, tempList.size());
         assertThat(tempList).contains(steward);
         assertThat(tempList).contains(steward2);
 
-        verify(stewardDao, times(1)).findAll();
+        verify(stewardDao, times(1)).findAll(null);
     }
 
     @Test
@@ -119,6 +122,7 @@ class StewardServiceImplTest {
 
     @Test
     void update() {
+        when(stewardDao.findById(1L)).thenReturn(steward);
         steward.setLastName("Sladky");
         stewardService.update(steward);
 

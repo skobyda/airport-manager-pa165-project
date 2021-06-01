@@ -10,12 +10,13 @@ import cz.fi.muni.pa165.project.service.BeanMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 /**
- @author Simon Kobyda
- @created 27/04/2021
- @project airport-manager
+ * @author Simon Kobyda
+ * @created 27/04/2021
+ * @project airport-manager
  **/
 
 @Service

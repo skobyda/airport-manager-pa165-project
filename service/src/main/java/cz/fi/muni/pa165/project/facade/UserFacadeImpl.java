@@ -54,7 +54,7 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public boolean authenticate(UserAuthenticateDTO u) {
-        User user = userService.findUserById(u.getId());
+        User user = userService.findUserByEmail(u.getEmail()); // TODO: handle find with non-existing email
         return userService.authenticate(user, u.getPassword());
     }
 }

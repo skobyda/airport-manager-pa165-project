@@ -7,15 +7,15 @@ package cz.fi.muni.pa165.project.dto;
  **/
 public class UserAuthenticateDTO {
 
-    private Long id;
+    private String email;
     private String password;
 
-    public Long getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

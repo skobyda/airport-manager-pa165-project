@@ -1,17 +1,24 @@
 package cz.fi.muni.pa165.project.dao;
 
-import cz.fi.muni.pa165.project.AirportManagerApplication;
+import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -19,18 +26,20 @@ import static org.junit.jupiter.api.Assertions.*;
  * @created 10.04.2021
  * @project airport-manager
  **/
-@SpringBootTest(classes = AirportManagerApplication.class)
+@SpringBootTest
 @Transactional
+@ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class StewardDaoImplTest {
 
     @Autowired
-    private StewardDaoImpl StewardDao;
+    private StewardDao stewardDao;
 
-    @Autowired
-    private FlightDaoImpl flightDao;
+    @PersistenceContext
+    EntityManager em;
 
     private Steward stewardAnna;
     private Steward stewardEva;
+    private Steward stewardEva2;
     private Steward stewardAbdur;
     private Steward stewardPocahontas;
 
@@ -44,15 +53,16 @@ class StewardDaoImplTest {
         toVienna = createFlight("W6231");
         toPrague = createFlight("WZZ321");
 
-        flightDao.create(toDubai);
-        flightDao.create(toVienna);
-        flightDao.create(toPrague);
+        em.persist(toDubai);
+        em.persist(toVienna);
+        em.persist(toPrague);
 
         createStewards();
-        StewardDao.create(stewardAnna);
-        StewardDao.create(stewardEva);
-        StewardDao.create(stewardAbdur);
-        StewardDao.create(stewardPocahontas);
+        em.persist(stewardAnna);
+        em.persist(stewardEva);
+        em.persist(stewardEva2);
+        em.persist(stewardAbdur);
+        em.persist(stewardPocahontas);
 
     }
 
@@ -62,8 +72,8 @@ class StewardDaoImplTest {
      */
     @Test
     void findAll() {
-        List<Steward> allStewards = StewardDao.findAll();
-        assertEquals(4, allStewards.size());
+        List<Steward> allStewards = stewardDao.findAll(null);
+        assertEquals(5, allStewards.size());
 
         assertContainsSteward(allStewards, "Anna");
         assertContainsSteward(allStewards, "Eva");
@@ -71,16 +81,31 @@ class StewardDaoImplTest {
         assertContainsSteward(allStewards, "Abdul");
     }
 
+    @Test
+    void findAllEva() {
+        List<Steward> allEvaStewards = stewardDao.findAll(filter("Eva", null, null));
+
+        assertEquals(2, allEvaStewards.size());
+        assertThat(allEvaStewards).containsExactly(stewardEva, stewardEva2);
+    }
+
+    @Test
+    void findSpecificEva() {
+        List<Steward> specificEva = stewardDao.findAll(filter("Eva", "Mitchel", null));
+
+        assertEquals(1, specificEva.size());
+        assertThat(specificEva).containsExactly(stewardEva2);
+    }
+
     /**
      * Tests delete method by checking if the removed steward is no longer in list of stewards and the list decreases by one
      */
     @Test
     void delete() {
-        int originalSize = StewardDao.findAll().size();
-        StewardDao.findById(stewardAnna.getId());
-        StewardDao.delete(stewardAnna);
-        assertNull(StewardDao.findById(stewardAnna.getId()));
-        assertEquals( originalSize - 1, StewardDao.findAll().size());
+        int originalSize = stewardDao.findAll(null).size();
+        stewardDao.findById(stewardAnna.getId());
+        stewardDao.delete(stewardAnna);
+        assertEquals(originalSize - 1, stewardDao.findAll(null).size());
     }
 
     /**
@@ -89,12 +114,12 @@ class StewardDaoImplTest {
     @Test
     void update() {
         Long id = stewardAnna.getId();
-        Steward tmpAnna = StewardDao.findById(id);
+        Steward tmpAnna = stewardDao.findById(id);
         String annaLastName = tmpAnna.getLastName();
         // she got married :)
         tmpAnna.setLastName("Petrova");
-        StewardDao.update(tmpAnna);
-        Steward newTmpAnna = StewardDao.findById(id);
+        stewardDao.update(tmpAnna);
+        Steward newTmpAnna = stewardDao.findById(id);
         String newAnnaLastName = newTmpAnna.getLastName();
         assertNotEquals(annaLastName, newAnnaLastName);
     }
@@ -105,7 +130,7 @@ class StewardDaoImplTest {
     @Test
     void findByFirstName() {
         Long id = stewardAnna.getId();
-        List<Steward> list = StewardDao.findByFirstName("Anna");
+        List<Steward> list = stewardDao.findByFirstName("Anna");
         assertEquals(list.get(0).getId(), id);
     }
 
@@ -115,7 +140,7 @@ class StewardDaoImplTest {
     @Test
     void findByLastName() {
         Long id = stewardEva.getId();
-        List<Steward> list = StewardDao.findByLastName("Malakova");
+        List<Steward> list = stewardDao.findByLastName("Malakova");
         assertEquals(list.get(0).getId(), id);
     }
 
@@ -125,8 +150,19 @@ class StewardDaoImplTest {
     @Test
     void findByCountryCode() {
         Long id = stewardEva.getId();
-        List<Steward> list = StewardDao.findByCountryCode("CZ");
+        List<Steward> list = stewardDao.findByCountryCode("CZ");
         assertEquals(list.get(0).getId(), id);
+    }
+
+    /**
+     * Tests create by checking number of stewards created
+     */
+    @Test
+    void create() {
+        Steward testSteward = new Steward();
+        testSteward.setPassportNumber("42");
+        stewardDao.create(testSteward);
+        assertEquals(6, stewardDao.findAll(null).size());
     }
 
     /**
@@ -135,12 +171,12 @@ class StewardDaoImplTest {
     @Test
     void findByPassportNumber() {
         Long id = stewardAnna.getId();
-        List<Steward> list = StewardDao.findByPassportNumber("EAP33855");
+        List<Steward> list = stewardDao.findByPassportNumber("EAP33855");
         assertEquals(list.get(0).getId(), id);
     }
 
     private void assertContainsSteward(List<Steward> stewards, String expectedFirstName) {
-        for(Steward steward: stewards){
+        for (Steward steward : stewards) {
             if (steward.getFirstName().equals(expectedFirstName))
                 return;
         }
@@ -156,12 +192,19 @@ class StewardDaoImplTest {
                 "Malakova"
         );
 
+        stewardEva2 = createSteward(
+                "CZ",
+                "123456789",
+                "Eva",
+                "Mitchel"
+        );
+
         stewardAnna = createSteward(
                 "PL",
                 "EAP33855",
                 "Anna",
                 "Czeczesova"
-                );
+        );
 
         stewardAbdur = createSteward(
                 "AE",
@@ -198,5 +241,13 @@ class StewardDaoImplTest {
         flight.setFlightCode(flightCode);
 
         return flight;
+    }
+
+    private StewardFilterDTO filter(String firstName, String lastName, String countryCode) {
+        StewardFilterDTO filter = new StewardFilterDTO();
+        filter.setFirstName(firstName);
+        filter.setLastName(lastName);
+        filter.setCountryCode(countryCode);
+        return filter;
     }
 }

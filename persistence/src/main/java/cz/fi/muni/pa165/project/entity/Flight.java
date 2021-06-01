@@ -107,9 +107,9 @@ public class Flight {
         steward.addFlight(this);
     }
 
-    public void setStewards(Set<Steward> stewards){
+    public void setStewards(Set<Steward> stewards) {
         this.stewards = stewards;
-        for(Steward steward: stewards){
+        for (Steward steward : stewards) {
             steward.addFlight(this);
         }
     }
@@ -121,9 +121,10 @@ public class Flight {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o == null) return false;
         if (!(o instanceof Flight)) return false;
         Flight flight = (Flight) o;
-        return getFlightCode().equals(flight.getFlightCode());
+        return Objects.equals(getFlightCode(), flight.getFlightCode());
     }
 
     @Override

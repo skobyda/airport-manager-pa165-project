@@ -2,11 +2,14 @@ package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.dao.UserDao;
 import cz.fi.muni.pa165.project.entity.User;
+import cz.fi.muni.pa165.project.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -47,5 +50,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String email) {
         return userDao.findUserByEmail(email);
+    }
+
+    @Override
+    public boolean verifyRole(String basicAuth, UserRole role) {
+        if (basicAuth != null && basicAuth.toLowerCase().startsWith("basic")) {
+            // Authorization: Basic base64credentials
+            String base64Credentials = basicAuth.substring("Basic".length()).trim();
+            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+            // credentials = username:password
+            final String[] values = credentials.split(":", 2);
+
+            User u = this.findUserByEmail(values[0]);
+            if (u == null) {
+                return false;
+            }
+
+            if (!this.authenticate(u, values[1])) {
+                return false;
+            }
+
+            return this.checkRole(u, role);
+        }
+
+        return false;
+    }
+
+    private boolean checkRole(User u, UserRole role) {
+        if (u.getRole() == UserRole.AIRPORT_MANAGER) {
+            return true;
+        }
+        return u.getRole() == role;
     }
 }

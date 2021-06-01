@@ -1,11 +1,13 @@
 package cz.fi.muni.pa165.project.facade;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dto.*;
 import cz.fi.muni.pa165.project.entity.Airplane;
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import cz.fi.muni.pa165.project.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -32,11 +35,15 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class FlightFacadeImplTest {
 
     @Autowired
     @InjectMocks
     FlightFacadeImpl flightFacade;
+
+    @MockBean
+    BeanMappingService beanMappingService;
 
     @MockBean
     FlightService flightService;
@@ -50,9 +57,6 @@ class FlightFacadeImplTest {
     @MockBean
     StewardService stewardService;
 
-    @MockBean
-    BeanMappingService beanMappingService;
-
     Airplane airplane1;
     Flight flight1;
 
@@ -61,42 +65,42 @@ class FlightFacadeImplTest {
     Steward steward1;
     Steward steward2;
 
-    AirplaneDTO airplane1DTO;
+    AirplaneSimpleDTO airplane1DTO;
     FlightDTO flight1DTO;
-    AirportDTO airport1DTO;
-    AirportDTO airport2DTO;
-    StewardDTO steward1DTO;
-    StewardDTO steward2DTO;
+    AirportSimpleDTO airport1DTO;
+    AirportSimpleDTO airport2DTO;
+    StewardSimpleDTO steward1DTO;
+    StewardSimpleDTO steward2DTO;
 
     @BeforeEach
     public void setUp() {
         Object[] temporaryObject;
         temporaryObject = createAirport("SAE", "Dubai airport", "Dubai", 1L);
         airport1 = (Airport) temporaryObject[0];
-        airport1DTO = (AirportDTO) temporaryObject[1];
+        airport1DTO = (AirportSimpleDTO) temporaryObject[1];
 
         temporaryObject = createAirport("SAE", "New York airport", "Haha_Land", 2L);
         airport2 = (Airport) temporaryObject[0];
-        airport2DTO = (AirportDTO) temporaryObject[1];
+        airport2DTO = (AirportSimpleDTO) temporaryObject[1];
 
         temporaryObject = createAirplane("RandomAirplaneName3", 100, AirplaneType.JET, 1L);
         airplane1 = (Airplane) temporaryObject[0];
-        airplane1DTO = (AirplaneDTO) temporaryObject[1];
+        airplane1DTO = (AirplaneSimpleDTO) temporaryObject[1];
 
         temporaryObject = createSteward("SVK", "123", "Anna", "Novakova", 1L);
         steward1 = (Steward) temporaryObject[0];
-        steward1DTO = (StewardDTO) temporaryObject[1];
+        steward1DTO = (StewardSimpleDTO) temporaryObject[1];
 
         temporaryObject = createSteward("CZK", "124", "Janka", "Jandova", 2L);
         steward2 = (Steward) temporaryObject[0];
-        steward2DTO = (StewardDTO) temporaryObject[1];
+        steward2DTO = (StewardSimpleDTO) temporaryObject[1];
 
         temporaryObject = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "NVL185", 1L);
         flight1 = (Flight) temporaryObject[0];
         flight1DTO = (FlightDTO) temporaryObject[1];
 
         //create list of stewards
-        HashSet<StewardDTO> stewards = new HashSet<>();
+        HashSet<StewardSimpleDTO> stewards = new HashSet<>();
         stewards.add(steward1DTO);
         stewards.add(steward2DTO);
 
@@ -110,23 +114,17 @@ class FlightFacadeImplTest {
         flight1.setAirplane(airplane1);
         flight1.addSteward(steward1);
         flight1.addSteward(steward2);
-        flight1DTO.setDestinationAirportId(flight1.getDestinationAirport().getId());
-        flight1DTO.setOriginAirportId(flight1.getOriginAirport().getId());
-        flight1DTO.setAirplaneId(flight1.getAirplane().getId());
+        flight1DTO.setDestinationAirport(airport1DTO);
+        flight1DTO.setOriginAirport(airport2DTO);
+        flight1DTO.setAirplane(airplane1DTO);
 
-        //add list of flights to used entities
-        airplane1DTO.setFlights(flightsDTOset);
-        airport1DTO.setDepartureFlights(flightsDTOset);
-        airport2DTO.setArrivalFlights(flightsDTOset);
 
         //finish relationships in flightDTO
-        flight1DTO.setOriginAirportId(airport1DTO.getId());
-        flight1DTO.setDestinationAirportId(airport2DTO.getId());
-        flight1DTO.setAirplaneId(airplane1DTO.getId());
         flight1DTO.setStewards(stewards);
 
         when(beanMappingService.mapTo(flight1, FlightDTO.class)).thenReturn(flight1DTO);
         when(beanMappingService.mapTo(flight1DTO, Flight.class)).thenReturn(flight1);
+        when(beanMappingService.mapTo(List.of(flight1), FlightDTO.class)).thenReturn(List.of(flight1DTO));
 
     }
 
@@ -145,52 +143,39 @@ class FlightFacadeImplTest {
     }
 
     @Test
-    void create() throws Exception {
+    void create() throws AirportManagerException {
         //Initialize Flight and FlightCreateDTO classes
-        Object [] temporaryObject = createFlightWithoutStewards(LocalDate.of(2020, Month.MARCH, 2), LocalDate.of(2020, Month.MARCH, 2), "NVL185", 2L);
+        Object[] temporaryObject = createFlightWithoutStewards(LocalDate.of(2020, Month.MARCH, 2), LocalDate.of(2020, Month.MARCH, 2), "NVL185", 2L);
         Flight flight2WithoutStewards = (Flight) temporaryObject[0];
         FlightCreateDTO flight2CreateDTO = (FlightCreateDTO) temporaryObject[1];
         flight2WithoutStewards.setAirplane(flight1.getAirplane());
         flight2WithoutStewards.setDestinationAirport(flight1.getDestinationAirport());
         flight2WithoutStewards.setOriginAirport(flight1.getOriginAirport());
-        flight2CreateDTO.setAirplaneId(flight1DTO.getAirplaneId());
-        flight2CreateDTO.setDestinationAirportId(flight1DTO.getDestinationAirportId());
-        flight2CreateDTO.setOriginAirportId(flight1DTO.getOriginAirportId());
+        flight2CreateDTO.setAirplaneId(flight1DTO.getAirplane().getId());
+        flight2CreateDTO.setDestinationAirportId(flight1DTO.getDestinationAirport().getId());
+        flight2CreateDTO.setOriginAirportId(flight1DTO.getOriginAirport().getId());
 
         //setup mock methods
         when(airplaneService.findById(flight2CreateDTO.getAirplaneId())).thenReturn(flight2WithoutStewards.getAirplane());
         when(airportService.findById(flight2CreateDTO.getDestinationAirportId())).thenReturn(flight2WithoutStewards.getDestinationAirport());
         when(airportService.findById(flight2CreateDTO.getOriginAirportId())).thenReturn(flight2WithoutStewards.getOriginAirport());
-        when(stewardService.findById(1L)).thenReturn(steward1);
-        when(stewardService.findById(2L)).thenReturn(steward2);
         when(flightService.create(flight2WithoutStewards)).thenReturn(flight2WithoutStewards);
+        when(beanMappingService.mapTo(flight2CreateDTO, Flight.class)).thenReturn(flight2WithoutStewards);
 
         //test facade method create
         flightFacade.create(flight2CreateDTO);
         verify(flightService, times(1)).create(flight2WithoutStewards);
-        verify(airportService, times(1)).findById(1L);
-        verify(airportService, times(1)).findById(2L);
-        verify(airplaneService,times(1)).findById(1L);
+
     }
 
     @Test
-    void update() throws Exception {
-        //setup mock
-        when(airplaneService.findById(flight1DTO.getAirplaneId())).thenReturn(airplane1);
-        when(airportService.findById(flight1DTO.getOriginAirportId())).thenReturn(airport1);
-        when(airportService.findById(flight1DTO.getDestinationAirportId())).thenReturn(airport2);
-        when(stewardService.findById(1L)).thenReturn(steward1);
-        when(stewardService.findById(2L)).thenReturn(steward2);
+    void update() throws AirportManagerException {
         when(flightService.update(flight1)).thenReturn(flight1);
 
         //test facade method update
         flightFacade.update(flight1DTO);
         verify(flightService, times(1)).update(flight1);
-        verify(airportService, times(1)).findById(1L);
-        verify(airportService, times(1)).findById(2L);
-        verify(airplaneService,times(1)).findById(1L);
-        verify(stewardService,times(1)).findById(1L);
-        verify(stewardService,times(1)).findById(2L);
+
 
     }
 
@@ -209,7 +194,7 @@ class FlightFacadeImplTest {
     }
 
     @Test
-    void addSteward() throws Exception {
+    void addSteward() throws AirportManagerException {
         flightFacade.addSteward(steward1.getId(), flight1.getId());
         verify(flightService, times(1)).addSteward(steward1.getId(), flight1.getId());
     }
@@ -256,7 +241,7 @@ class FlightFacadeImplTest {
         airplane.setCapacity(capacity);
         airplane.setType(airplaneType);
 
-        AirplaneDTO airplaneDTO = new AirplaneDTO();
+        AirplaneSimpleDTO airplaneDTO = new AirplaneSimpleDTO();
         airplaneDTO.setCapacity(airplane.getCapacity());
         airplaneDTO.setName(airplane.getName());
         airplaneDTO.setId(airplane.getId());
@@ -271,7 +256,7 @@ class FlightFacadeImplTest {
         newAirport.setName(name);
         newAirport.setId(id);
 
-        AirportDTO airportDTO = new AirportDTO();
+        AirportSimpleDTO airportDTO = new AirportSimpleDTO();
         airportDTO.setCity(newAirport.getCity());
         airportDTO.setName(newAirport.getName());
         airportDTO.setId(newAirport.getId());
@@ -286,7 +271,7 @@ class FlightFacadeImplTest {
         steward.setFirstName(firstName);
         steward.setLastName(lastName);
 
-        StewardDTO stewardDTO = new StewardDTO();
+        StewardSimpleDTO stewardDTO = new StewardSimpleDTO();
         stewardDTO.setCountryCode(steward.getCountryCode());
         stewardDTO.setFirstName(steward.getFirstName());
         stewardDTO.setId(steward.getId());

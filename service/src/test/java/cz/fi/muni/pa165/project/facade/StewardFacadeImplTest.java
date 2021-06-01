@@ -1,11 +1,14 @@
 package cz.fi.muni.pa165.project.facade;
 
+import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dto.StewardCreateDTO;
 import cz.fi.muni.pa165.project.dto.StewardDTO;
+import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.service.BeanMappingService;
 import cz.fi.muni.pa165.project.service.StewardService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,9 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.filter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -27,6 +33,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class StewardFacadeImplTest {
 
     @Autowired
@@ -110,13 +117,13 @@ class StewardFacadeImplTest {
     }
 
     @Test
-    void testFindAll() {
-        when(stewardService.findAll()).thenReturn(List.of(steward1, steward2));
+    void testFindAllWithoutFilter() {
+        when(stewardService.findAll(null)).thenReturn(List.of(steward1, steward2));
         when(beanMappingService.mapTo(List.of(steward1, steward2), StewardDTO.class)).thenReturn(List.of(stewardDTO1, stewardDTO2));
 
-        assertEquals(2, stewardFacade.findAll().size());
+        assertEquals(2, stewardFacade.findAll(null).size());
 
-        verify(stewardService, times(1)).findAll();
+        verify(stewardService, times(1)).findAll(null);
         verify(beanMappingService, times(1)).mapTo(List.of(steward1, steward2), StewardDTO.class);
     }
 

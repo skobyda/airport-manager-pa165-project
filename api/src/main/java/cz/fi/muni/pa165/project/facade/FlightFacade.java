@@ -1,6 +1,7 @@
 package cz.fi.muni.pa165.project.facade;
 
 import cz.fi.muni.pa165.project.dto.*;
+import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,14 +33,14 @@ public interface FlightFacade {
      *
      * @param flightDTO - FlightDTO entity to be persisted
      */
-    Long create(FlightCreateDTO flightDTO) throws Exception;
+    Long create(FlightCreateDTO flightDTO) throws AirportManagerException;
 
     /**
      * Method to update specific {@code FlightDTO} entity parameters.
      *
      * @param flightDTO - {@code FlightDTO} entity to be updated
      */
-    Long update(FlightDTO flightDTO) throws Exception;
+    Long update(FlightDTO flightDTO) throws AirportManagerException;
 
     /**
      * Removes {@code FlightDTO} entity from database based on its id.
@@ -74,4 +75,24 @@ public interface FlightFacade {
      * @param stewardId - id of {@code Steward} entity
      */
     void removeSteward(Long stewardId, Long flightId);
+
+    /**
+     * Method for listing n first flights ordered by arrival date
+     *
+     * @param limit maximal number of flights to return
+     * @param airportId id of airport to where flights will land
+     * @return list of flights
+     */
+    public List<FlightDTO> getFlightsOrderedByArrival(int limit, Long airportId);
+
+    /**
+     * Method for listing n first flights ordered by departure date
+     *
+     * @param limit maximal number of flights to return
+     * @param airportId id of airport from where flights will start
+     * @return list of flights
+     */
+    public List<FlightDTO> getFlightsOrderedByDeparture(int limit, Long airportId);
+
+
 }
