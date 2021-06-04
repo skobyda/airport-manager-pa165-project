@@ -31,6 +31,40 @@ Need to have npm or yarn on your system.
 **Frontend alternatively:**  
 `cd rest/ui && yarn install && yarn start`  
 
+## Test it with CURL
+
+Get list of flights  
+`curl -i -X GET http://localhost:8080/pa165/rest/flights`  
+
+Get specific flight  
+`curl -i -X GET http://localhost:8080/pa165/rest/flights/1`  
+
+Log in as airport manager and get list of all stewards  
+`curl --location --request GET 'http://localhost:8080/pa165/rest/stewards' --header 'Authorization: Basic cGVwYUBleGFtcGxlLmNvbTpwZXBh'`  
+
+Log in as airport-manager and delete flight with id 1  
+`curl --location --request DELETE 'http://localhost:8080/pa165/rest/flights/2' --header 'Authorization: Basic cGVwYUBleGFtcGxlLmNvbTpwZXBh'`  
+
+Log in and create new airplane  
+`curl --location --request POST 'http://localhost:8080/pa165/rest/airplanes' \
+--header 'Authorization: Basic cGVwYUBleGFtcGxlLmNvbTpwZXBh' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "stvorplosnik turbo 4000",
+    "capacity": 400,
+    "type": "PISTON"
+}'`
+
+Log in and update airplane type  
+`curl --location --request PUT 'http://localhost:8080/pa165/rest/airplanes/1' \
+--header 'Authorization: Basic cGVwYUBleGFtcGxlLmNvbTpwZXBh' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "stvorplosnik turbo 3000",
+    "capacity": 200,
+    "type": "PISTON"
+}'`
+
 ## Links
 - [IS homework vault](https://is.muni.cz/auth/el/fi/jaro2021/PA165/ode/)
 - [Topic selection form](https://forms.gle/5jwvj8yjEuGKBUwQA)
