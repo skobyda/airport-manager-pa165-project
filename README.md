@@ -20,6 +20,16 @@ The system should also check that the plane does not have another flight schedul
 It should also be possible to assign (remove) stewards to (from) a flight while checking for the steward's availability.  
 The ultimate goal is to have a system capable of listing flights ordered by date and displaying the flight details (origin, destination, departure time, arrival time, plane, list of stewards)."
 
+## How to run it
+Need to have npm or yarn on your system.
+### Backend:
+`mvn clean install && cd rest && mvn spring-boot:run`
+
+### Frontend:
+`cd rest/ui && npm install && npm start`  
+
+**Frontend alternatively:**  
+`cd rest/ui && yarn install && yarn start`  
 
 ## Links
 - [IS homework vault](https://is.muni.cz/auth/el/fi/jaro2021/PA165/ode/)
