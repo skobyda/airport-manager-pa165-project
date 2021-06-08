@@ -2,22 +2,20 @@ package cz.fi.muni.pa165.project.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Petr Hendrych
- * @created 27.04.2021
- * @project airport-manager
  **/
 public class FlightCreateDTO {
 
     @NotNull
-    private LocalDate departure;
+    private LocalDateTime departure;
 
     @NotNull
-    private LocalDate arrival;
+    private LocalDateTime arrival;
 
     @NotNull
     private Long originAirportId;
@@ -34,19 +32,19 @@ public class FlightCreateDTO {
 
     private Set<Long> stewardIds = new HashSet<>();
 
-    public LocalDate getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalDate departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 
-    public LocalDate getArrival() {
+    public LocalDateTime getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalDate arrival) {
+    public void setArrival(LocalDateTime arrival) {
         this.arrival = arrival;
     }
 

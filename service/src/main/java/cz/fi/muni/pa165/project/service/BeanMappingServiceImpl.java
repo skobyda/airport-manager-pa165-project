@@ -10,15 +10,17 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych, Jozef Vanický, Michal Zelenák
- * @created 28.04.2021
- * @project airport-manager
  **/
 
 @Service
 public class BeanMappingServiceImpl implements BeanMappingService {
 
+    private final Mapper mapper;
+
     @Autowired
-    private Mapper mapper;
+    public BeanMappingServiceImpl(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass) {

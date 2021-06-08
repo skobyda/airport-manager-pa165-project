@@ -1,12 +1,13 @@
 package cz.fi.muni.pa165.project.entity;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Jozef Vanický
- * @created 07.04.2021
- * @project airport-manager
  **/
 
 @Entity
@@ -17,7 +18,7 @@ public class Steward {
 
     private String countryCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String passportNumber;
 
     private String firstName;

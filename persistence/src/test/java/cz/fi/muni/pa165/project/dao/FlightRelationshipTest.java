@@ -16,15 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Michal Zelenák
- * @created 10.04.2021
- * @project airport-manager
  **/
 
 @SpringBootTest
@@ -32,6 +30,8 @@ import java.util.Set;
 @ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 public class FlightRelationshipTest {
 
+    @PersistenceContext
+    EntityManager em;
     private Airplane airplane1;
     private Airplane airplane2;
     private Flight flight1;
@@ -40,12 +40,8 @@ public class FlightRelationshipTest {
     private Airport airport2;
     private Steward steward1;
     private Steward steward2;
-
     @Autowired
     private FlightDao flightDao = new FlightDaoImpl();
-
-    @PersistenceContext
-    EntityManager em;
 
     @BeforeEach
     void setup() {
@@ -60,10 +56,10 @@ public class FlightRelationshipTest {
         steward2 = createSteward("CZK", "124", "Janka", "Jandova");
 
         String flight1Code = "NVL185";
-        flight1 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), flight1Code);
+        flight1 = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), flight1Code);
 
         String flight2Code = "PDL834";
-        flight2 = createFlight(LocalDate.of(2020, Month.JANUARY, 2), LocalDate.of(2020, Month.JANUARY, 2), flight2Code);
+        flight2 = createFlight(LocalDateTime.of(2020, Month.JANUARY, 2, 0 , 0), LocalDateTime.of(2020, Month.JANUARY, 2, 0 , 0), flight2Code);
 
     }
 
@@ -136,8 +132,8 @@ public class FlightRelationshipTest {
     }
 
     private Flight createFlight(
-            LocalDate departure,
-            LocalDate arrival,
+            LocalDateTime departure,
+            LocalDateTime arrival,
             String flightCode) {
         Flight flight = new Flight();
         flight.setDeparture(departure);

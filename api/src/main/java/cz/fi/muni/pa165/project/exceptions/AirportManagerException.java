@@ -2,8 +2,6 @@ package cz.fi.muni.pa165.project.exceptions;
 
 /**
  * @author Petr Hendrych
- * @created 27.05.2021
- * @project airport-manager
  **/
 public class AirportManagerException extends RuntimeException {
 

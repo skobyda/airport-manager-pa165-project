@@ -12,15 +12,17 @@ import java.util.List;
 
 /**
  * @author Simon Kobyda
- * @created 27/04/2021
- * @project airport-manager
  **/
 
 @Service
 public class AirportServiceImpl implements AirportService {
 
+    private final AirportDao airportDao;
+
     @Autowired
-    private AirportDao airportDao;
+    public AirportServiceImpl(AirportDao airportDao) {
+        this.airportDao = airportDao;
+    }
 
     @Override
     public void create(Airport airport) {

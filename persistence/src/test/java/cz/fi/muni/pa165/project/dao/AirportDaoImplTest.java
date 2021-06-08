@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * @author Michal Zelenák
- * @created 10.04.2021
- * @project airport-manager
  **/
 
 @SpringBootTest
@@ -29,26 +27,23 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class AirportDaoImplTest {
 
+    @PersistenceContext
+    EntityManager em;
     private Flight flight123;
     private Flight flight125;
     private Flight flight127;
-
     private Airport KennedyAirport;
     private Airport WashingtonAirport;
     private Airport toUpdateAirport;
-
-    @PersistenceContext
-    EntityManager em;
-
     @Autowired
     private AirportDao airportDao;
 
 
     @BeforeEach
     void setUp() {
-        flight123 = createFlight(LocalDate.of(2021, 11, 9), LocalDate.of(2021, 11, 9), "JAR-123");
-        flight125 = createFlight(LocalDate.of(2021, 11, 8), LocalDate.of(2021, 11, 8), "JAR-125");
-        flight127 = createFlight(LocalDate.of(2021, 12, 8), LocalDate.of(2021, 12, 8), "JAR-127");
+        flight123 = createFlight(LocalDateTime.of(2021, 11, 9, 0 , 0), LocalDateTime.of(2021, 11, 9, 0 , 0), "JAR-123");
+        flight125 = createFlight(LocalDateTime.of(2021, 11, 8, 0 , 0), LocalDateTime.of(2021, 11, 8, 0 , 0), "JAR-125");
+        flight127 = createFlight(LocalDateTime.of(2021, 12, 8, 0 , 0), LocalDateTime.of(2021, 12, 8, 0 , 0), "JAR-127");
         em.persist(flight123);
         em.persist(flight125);
         em.persist(flight127);
@@ -146,7 +141,7 @@ class AirportDaoImplTest {
         assertEquals(3, airportDao.findAll().size());
     }
 
-    private Flight createFlight(LocalDate arrival, LocalDate departure, String flightCode) {
+    private Flight createFlight(LocalDateTime arrival, LocalDateTime departure, String flightCode) {
         flight123 = new Flight();
         flight123.setArrival(arrival);
         flight123.setDeparture(departure);

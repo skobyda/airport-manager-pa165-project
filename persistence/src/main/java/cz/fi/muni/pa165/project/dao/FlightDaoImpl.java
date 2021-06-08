@@ -7,13 +7,11 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * @author Michal Zelenák
- * @created 09.04.2021
- * @project airport-manager
  **/
 
 @Repository
@@ -51,13 +49,13 @@ public class FlightDaoImpl implements FlightDao {
     }
 
     @Override
-    public List<Flight> findByDeparture(LocalDate departure) {
+    public List<Flight> findByDeparture(LocalDateTime departure) {
         return em.createQuery("select f from Flight f where f.departure = :departure", Flight.class).setParameter("departure", departure)
                 .getResultList();
     }
 
     @Override
-    public List<Flight> findByArrival(LocalDate arrival) {
+    public List<Flight> findByArrival(LocalDateTime arrival) {
         return em.createQuery("select f from Flight f where f.arrival = :arrival", Flight.class).setParameter("arrival", arrival)
                 .getResultList();
     }
@@ -70,7 +68,7 @@ public class FlightDaoImpl implements FlightDao {
 
     @Override
     public List<Flight> getFlightsOrderedByArrival(int limit, Long airportId) {
-        TypedQuery<Flight> query = em.createQuery("select f from Flight f where f.originAirport.id = :id order by f.arrival", Flight.class)
+        TypedQuery<Flight> query = em.createQuery("select f from Flight f where f.originAirport.id = :id order by f.arrival desc", Flight.class)
                 .setParameter("id", airportId);
 
         return limit == 0 ? query.getResultList() : query.setMaxResults(limit).getResultList();
@@ -78,7 +76,7 @@ public class FlightDaoImpl implements FlightDao {
 
     @Override
     public List<Flight> getFlightsOrderedByDeparture(int limit, Long airportId) {
-        TypedQuery<Flight> query = em.createQuery("select f from Flight f where f.destinationAirport.id = :id order by f.departure", Flight.class)
+        TypedQuery<Flight> query = em.createQuery("select f from Flight f where f.destinationAirport.id = :id order by f.departure desc", Flight.class)
                 .setParameter("id", airportId);
 
         return limit == 0 ? query.getResultList() : query.setMaxResults(limit).getResultList();

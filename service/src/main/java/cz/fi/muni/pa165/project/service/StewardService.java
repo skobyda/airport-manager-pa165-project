@@ -2,17 +2,13 @@ package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Steward;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author Jozef Vanický
- * @created 28.04.2021
- * @project airport-manager
  **/
 
-@Service
 public interface StewardService {
 
     /**

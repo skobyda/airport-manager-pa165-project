@@ -8,31 +8,32 @@ import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Michal Zelenák
- * @created 5.05.2021
- * @project airport-manager
  **/
 
 @Service
 public class FlightServiceImpl implements FlightService {
 
-    @Autowired
-    private FlightDao flightDao;
+    private final FlightDao flightDao;
+    private final AirplaneDao airplaneDao;
+    private final StewardDao stewardDao;
 
     @Autowired
-    private AirplaneDao airplaneDao;
-
-    @Autowired
-    private StewardDao stewardDao;
+    public FlightServiceImpl(FlightDao flightDao, AirplaneDao airplaneDao, StewardDao stewardDao) {
+        this.flightDao = flightDao;
+        this.airplaneDao = airplaneDao;
+        this.stewardDao = stewardDao;
+    }
 
     @Override
     public Flight findById(Long id) {
@@ -45,7 +46,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<Flight> filterFlights(LocalDate dateFrom, LocalDate dateTo, Long departureAirportId, Long arrivalAirportId) {
+    public List<Flight> filterFlights(LocalDateTime dateFrom, LocalDateTime dateTo, Long departureAirportId, Long arrivalAirportId) {
         List<Flight> allFlights = findAll();
         List<Flight> filteredFlights = new ArrayList<>();
         for (Flight flight : allFlights) {
@@ -67,11 +68,11 @@ public class FlightServiceImpl implements FlightService {
         return departureAirportId == null || flight.getDestinationAirport().getId().equals(departureAirportId);
     }
 
-    private boolean checkDateToNullOrAfter(LocalDate dateTo, Flight flight) {
+    private boolean checkDateToNullOrAfter(LocalDateTime dateTo, Flight flight) {
         return dateTo == null || dateTo.isAfter(flight.getArrival());
     }
 
-    private boolean checkDateFromNullOrBefore(LocalDate dateFrom, Flight flight) {
+    private boolean checkDateFromNullOrBefore(LocalDateTime dateFrom, Flight flight) {
         return dateFrom == null || dateFrom.isBefore(flight.getDeparture());
     }
 
@@ -83,7 +84,10 @@ public class FlightServiceImpl implements FlightService {
             flightDao.create(flight);
         } catch (EntityExistsException e) {
             throw new AirportManagerException("Flight Entity already exists");
+        } catch (DataIntegrityViolationException e){
+            throw new AirportManagerException("Data integrity would be broken with this request, check the flight code, and IDs of entities");
         }
+
         return flightDao.findById(flight.getId());
     }
 
@@ -99,7 +103,10 @@ public class FlightServiceImpl implements FlightService {
             flightDao.update(mappedFlight);
         } catch (IllegalArgumentException e) {
             throw new AirportManagerException("Flight entity does not exists or is detached");
+        } catch (DataIntegrityViolationException e){
+            throw new AirportManagerException("Data integrity would be broken with this request, check the flight code, and IDs of entities");
         }
+
         return flightDao.findById(mappedFlight.getId());
     }
 
@@ -133,8 +140,8 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private void checkStewardAvailability(Steward steward, Flight flightWithSteward) throws AirportManagerException {
-        LocalDate dateFrom = flightWithSteward.getDeparture();
-        LocalDate dateTo = flightWithSteward.getArrival();
+        LocalDateTime dateFrom = flightWithSteward.getDeparture();
+        LocalDateTime dateTo = flightWithSteward.getArrival();
         String flightCode = flightWithSteward.getFlightCode();
         for (Flight flightWhereStewardWorks : stewardDao.findById(steward.getId()).getFlights()) {
             if (flightWhereStewardWorks.getFlightCode().equals(flightCode)) {
@@ -148,8 +155,8 @@ public class FlightServiceImpl implements FlightService {
 
     private void checkPlaneAvailability(Flight flightToCheck) throws AirportManagerException {
         Airplane airplane = flightToCheck.getAirplane();
-        LocalDate dateFrom = flightToCheck.getDeparture();
-        LocalDate dateTo = flightToCheck.getArrival();
+        LocalDateTime dateFrom = flightToCheck.getDeparture();
+        LocalDateTime dateTo = flightToCheck.getArrival();
         String flightCode = flightToCheck.getFlightCode();
         for (Flight flight : airplaneDao.findById(airplane.getId()).getFlights()) {
             if (flight.getFlightCode().equals(flightCode)) {

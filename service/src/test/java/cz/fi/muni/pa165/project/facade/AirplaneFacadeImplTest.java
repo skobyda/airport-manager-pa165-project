@@ -10,9 +10,7 @@ import cz.fi.muni.pa165.project.service.AirplaneService;
 import cz.fi.muni.pa165.project.service.BeanMappingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,17 +25,14 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Petr Hendrych
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class AirplaneFacadeImplTest {
 
-    @InjectMocks
-    private final AirplaneFacadeImpl airplaneFacade = new AirplaneFacadeImpl();
+    @Autowired
+    private AirplaneFacade airplaneFacade;
 
     @MockBean
     private AirplaneService airplaneService;
@@ -51,6 +46,39 @@ class AirplaneFacadeImplTest {
 
     private Airplane boeing;
     private AirplaneDTO boeingDTO;
+
+    private static AirplaneDTO createAirplaneDTO(Long id, String name, Integer capacity, AirplaneType type, Set<FlightDTO> flights) {
+        AirplaneDTO dto = new AirplaneDTO();
+
+        dto.setId(id);
+        dto.setName(name);
+        dto.setCapacity(capacity);
+        dto.setType(type);
+        dto.setFlights(flights);
+
+        return dto;
+    }
+
+    private static Airplane createAirplane(Long id, String name, Integer capacity, AirplaneType type) {
+        Airplane airplane = new Airplane();
+
+        airplane.setId(id);
+        airplane.setName(name);
+        airplane.setCapacity(capacity);
+        airplane.setType(type);
+
+        return airplane;
+    }
+
+    private static AirplaneCreateDTO createAirplaneCreateDTO(String name, Integer capacity, AirplaneType type) {
+        AirplaneCreateDTO a = new AirplaneCreateDTO();
+
+        a.setName(name);
+        a.setCapacity(capacity);
+        a.setType(type);
+
+        return a;
+    }
 
     @BeforeEach
     void setUp() {
@@ -145,38 +173,5 @@ class AirplaneFacadeImplTest {
         List<AirplaneDTO> airplanes = airplaneFacade.findByType(AirplaneType.COMMUTER);
         assertThat(airplanes.size()).isEqualTo(2);
         assertThat(airplanes).containsExactly(airbusDTO, boeingDTO);
-    }
-
-    private static AirplaneDTO createAirplaneDTO(Long id, String name, Integer capacity, AirplaneType type, Set<FlightDTO> flights) {
-        AirplaneDTO dto = new AirplaneDTO();
-
-        dto.setId(id);
-        dto.setName(name);
-        dto.setCapacity(capacity);
-        dto.setType(type);
-        dto.setFlights(flights);
-
-        return dto;
-    }
-
-    private static Airplane createAirplane(Long id, String name, Integer capacity, AirplaneType type) {
-        Airplane airplane = new Airplane();
-
-        airplane.setId(id);
-        airplane.setName(name);
-        airplane.setCapacity(capacity);
-        airplane.setType(type);
-
-        return airplane;
-    }
-
-    private static AirplaneCreateDTO createAirplaneCreateDTO(String name, Integer capacity, AirplaneType type) {
-        AirplaneCreateDTO a = new AirplaneCreateDTO();
-
-        a.setName(name);
-        a.setCapacity(capacity);
-        a.setType(type);
-
-        return a;
     }
 }

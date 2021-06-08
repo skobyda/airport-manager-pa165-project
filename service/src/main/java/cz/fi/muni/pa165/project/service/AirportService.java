@@ -2,17 +2,13 @@ package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.entity.Airport;
 import cz.fi.muni.pa165.project.entity.Flight;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author Simon Kobyda
- * @created 27/04/2021
- * @project airport-manager
  **/
 
-@Service
 public interface AirportService {
 
     /**

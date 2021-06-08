@@ -6,8 +6,6 @@ import java.util.Objects;
 
 /**
  * @author Simon Kobyda
- * @created 27/04/2021
- * @project airport-manager
  **/
 public class AirportCreateDTO {
 

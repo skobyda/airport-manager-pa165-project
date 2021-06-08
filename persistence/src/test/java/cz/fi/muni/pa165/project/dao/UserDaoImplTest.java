@@ -17,8 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Petr Hendrych
- * @created 30.04.2021
- * @project airport-manager
  **/
 
 @SpringBootTest
@@ -26,12 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class UserDaoImplTest {
 
-    @Autowired
-    private UserDao userDao;
-
     @PersistenceContext
     EntityManager em;
-
+    @Autowired
+    private UserDao userDao;
     private User user1;
     private User user2;
 

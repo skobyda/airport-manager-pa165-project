@@ -1,47 +1,37 @@
 package cz.fi.muni.pa165.project.service;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-
 import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
 import cz.fi.muni.pa165.project.dao.AirportDao;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-
-import java.util.List;
-
 import cz.fi.muni.pa165.project.entity.Airport;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
 /**
  * @author Simon Kobyda
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 public class AirportServiceTest {
 
-    @Autowired
-    @InjectMocks
-    private AirportServiceImpl airportService;
-
-    @MockBean
-    private AirportDao airportDao;
-
     Airport airportVienna;
     Airport airportBudapest;
     Airport airportPrague;
+
+    @Autowired
+    private AirportService airportService;
+
+    @MockBean
+    private AirportDao airportDao;
 
     @BeforeEach
     public void setUp() {

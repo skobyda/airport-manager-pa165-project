@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author Jozef Vanický
- * @created 9.04.2021
- * @project airport-manager
  **/
 
 @SpringBootApplication

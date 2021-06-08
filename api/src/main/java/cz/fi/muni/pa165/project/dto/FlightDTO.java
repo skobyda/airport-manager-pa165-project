@@ -1,25 +1,22 @@
 package cz.fi.muni.pa165.project.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author Petr Hendrych
- * @created 27.04.2021
- * @project airport-manager
  **/
 public class FlightDTO {
 
-   private Long id;
-   private LocalDate departure;
-   private LocalDate arrival;
-   private AirportSimpleDTO originAirport;
-   private AirportSimpleDTO destinationAirport;
-   private AirplaneSimpleDTO airplane;
-   private String flightCode;
-   private HashSet<StewardSimpleDTO> stewards = new HashSet<>();
+    private Long id;
+    private LocalDateTime departure;
+    private LocalDateTime arrival;
+    private AirportSimpleDTO originAirport;
+    private AirportSimpleDTO destinationAirport;
+    private AirplaneSimpleDTO airplane;
+    private String flightCode;
+    private HashSet<StewardSimpleDTO> stewards = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -29,19 +26,19 @@ public class FlightDTO {
         this.id = id;
     }
 
-    public LocalDate getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalDate departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 
-    public LocalDate getArrival() {
+    public LocalDateTime getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalDate arrival) {
+    public void setArrival(LocalDateTime arrival) {
         this.arrival = arrival;
     }
 

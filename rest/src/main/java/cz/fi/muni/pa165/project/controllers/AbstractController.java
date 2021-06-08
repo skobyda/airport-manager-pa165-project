@@ -8,10 +8,9 @@ import javax.naming.AuthenticationException;
 
 /**
  * @author Jozef Vanický
- * @created 31.05.2021
- * @project airport-manager
  **/
 public abstract class AbstractController {
+
     UserService userService;
 
     @Autowired

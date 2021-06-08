@@ -8,8 +8,6 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 28.04.2021
- * @project airport-manager
  **/
 public interface AirplaneFacade {
 

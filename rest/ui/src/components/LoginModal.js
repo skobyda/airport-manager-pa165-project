@@ -1,8 +1,8 @@
-import React, { useState} from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@material-ui/core";
+import React, {useEffect, useState} from "react";
+import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
-import { Alert } from "@material-ui/lab";
+import {Alert} from "@material-ui/lab";
 
 export default function LoginModal({openModal, handleClose, handleAuthentication}) {
     const [credentials, setCredentials] = useState({email: '', password: ''});
@@ -10,18 +10,18 @@ export default function LoginModal({openModal, handleClose, handleAuthentication
 
     async function authenticate() {
         try {
-            await axios.get("http://localhost:8080/pa165/rest/users/login", {
-                auth: {
-                    username: credentials.email,
-                    password: credentials.password
-                }
-            });
-            handleAuthentication(true, credentials);
+            const res = (await axios.post("http://localhost:8080/pa165/rest/users/login", credentials)).data;
+            handleAuthentication(true, credentials, res.role);
             closeModal();
         } catch (e) {
             setError(true);
         }
     }
+
+    useEffect(() => {
+        setError(false);
+    }, [openModal]);
+
 
     const handleChange = event => {
         const {name, value} = event.target;

@@ -2,18 +2,14 @@ package cz.fi.muni.pa165.project.service;
 
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * @author Michal Zelenák
- * @created 27.04.2021
- * @project airport-manager
  **/
 
-@Service
 public interface FlightService {
 
     /**
@@ -40,7 +36,7 @@ public interface FlightService {
      * @param arrivalAirportId   - Id of the arrival airport for filtering the flights
      * @return - specific {@code Flight} entity
      */
-    List<Flight> filterFlights(LocalDate dateFrom, LocalDate dateTo, Long departureAirportId, Long arrivalAirportId);
+    List<Flight> filterFlights(LocalDateTime dateFrom, LocalDateTime dateTo, Long departureAirportId, Long arrivalAirportId);
 
     /**
      * Method persist given entity.
@@ -82,18 +78,18 @@ public interface FlightService {
     /**
      * Method for listing n first flights ordered by arrival date
      *
-     * @param limit maximal number of flights to return
+     * @param limit     maximal number of flights to return
      * @param airportId id of airport to where flights will land
      * @return list of flights
      */
-    public List<Flight> getFlightsOrderedByArrival(int limit, Long airportId);
+    List<Flight> getFlightsOrderedByArrival(int limit, Long airportId);
 
     /**
      * Method for listing n first flights ordered by departure date
      *
-     * @param limit maximal number of flights to return
+     * @param limit     maximal number of flights to return
      * @param airportId id of airport from where flights will start
      * @return list of flights
      */
-    public List<Flight> getFlightsOrderedByDeparture(int limit, Long airportId);
+    List<Flight> getFlightsOrderedByDeparture(int limit, Long airportId);
 }

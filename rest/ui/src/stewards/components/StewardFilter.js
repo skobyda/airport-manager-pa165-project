@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, {useContext, useState} from "react";
 import axios from "axios";
-import {TextField, Card, CardContent, Button} from "@material-ui/core";
+import {Button, Card, CardContent, TextField} from "@material-ui/core";
 import {SearchOutlined} from "@material-ui/icons";
 import {mapValues} from 'lodash';
 
@@ -12,7 +12,7 @@ export default function StewardFilter({handleClick}) {
 
     const handleChange = event => {
         const {name, value} = event.target;
-        setFilter(prevState => ({...prevState, [name]: value }));
+        setFilter(prevState => ({...prevState, [name]: value}));
     }
 
     function fetchData() {
@@ -60,7 +60,7 @@ export default function StewardFilter({handleClick}) {
                             variant="contained"
                             color="primary"
                             onClick={() => fetchData()}>
-                        <SearchOutlined style={{marginRight: "5px"}} /> Search
+                        <SearchOutlined style={{marginRight: "5px"}}/> Search
                     </Button>
                 </div>
             </CardContent>

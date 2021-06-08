@@ -4,11 +4,9 @@ import cz.fi.muni.pa165.project.PersistenceTestsConfiguration;
 import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
-import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,24 +17,21 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * @author Simon Kobyda
- * @created 10.04.2021
- * @project airport-manager
  **/
 @SpringBootTest
 @Transactional
 @ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class StewardDaoImplTest {
 
-    @Autowired
-    private StewardDao stewardDao;
-
     @PersistenceContext
     EntityManager em;
-
+    @Autowired
+    private StewardDao stewardDao;
     private Steward stewardAnna;
     private Steward stewardEva;
     private Steward stewardEva2;
@@ -58,11 +53,7 @@ class StewardDaoImplTest {
         em.persist(toPrague);
 
         createStewards();
-        em.persist(stewardAnna);
-        em.persist(stewardEva);
-        em.persist(stewardEva2);
-        em.persist(stewardAbdur);
-        em.persist(stewardPocahontas);
+
 
     }
 
@@ -171,7 +162,7 @@ class StewardDaoImplTest {
     @Test
     void findByPassportNumber() {
         Long id = stewardAnna.getId();
-        List<Steward> list = stewardDao.findByPassportNumber("EAP33855");
+        List<Steward> list = stewardDao.findByPassportNumber("EAP33755");
         assertEquals(list.get(0).getId(), id);
     }
 
@@ -201,7 +192,7 @@ class StewardDaoImplTest {
 
         stewardAnna = createSteward(
                 "PL",
-                "EAP33855",
+                "EAP33755",
                 "Anna",
                 "Czeczesova"
         );
@@ -220,6 +211,11 @@ class StewardDaoImplTest {
                 "Pocahontas",
                 "QuietEagle"
         );
+        em.persist(stewardAnna);
+        em.persist(stewardEva);
+        em.persist(stewardEva2);
+        em.persist(stewardAbdur);
+        em.persist(stewardPocahontas);
     }
 
     private Steward createSteward(

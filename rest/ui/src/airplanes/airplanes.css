@@ -1,0 +1,10 @@
+.airplane-form__container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.airplane-form__container > div {
+    width: 100%;
+}

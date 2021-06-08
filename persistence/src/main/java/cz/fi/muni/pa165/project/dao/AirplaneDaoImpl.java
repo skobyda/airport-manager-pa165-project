@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * @author Simon Kobyda
- * @created 10.04.2021
- * @project airport-manager
  **/
 @Repository
 public class AirplaneDaoImpl implements AirplaneDao {

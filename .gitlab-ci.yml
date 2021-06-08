@@ -2,6 +2,6 @@ image: maven:3-jdk-11
 
 build:
   script:
-    - mvn clean install -DfailIfNoTests=true
+    - mvn clean install
   tags:
     - shared-fi

@@ -13,28 +13,23 @@ import cz.fi.muni.pa165.project.enums.AirplaneType;
 import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Michal Zelenák
- * @created 5.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class FlightServiceImplTest {
@@ -51,8 +46,7 @@ class FlightServiceImplTest {
     Steward steward2;
 
     @Autowired
-    @InjectMocks
-    FlightServiceImpl flightService;
+    FlightService flightService;
 
     @MockBean
     FlightDao flightDao;
@@ -68,8 +62,8 @@ class FlightServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        flight1 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "NVL185", 1L);
-        flight2 = createFlight(LocalDate.of(2020, Month.MARCH, 2), LocalDate.of(2020, Month.MARCH, 2), "CVL186", 2L);
+        flight1 = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 0, 0), LocalDateTime.of(2020, Month.MARCH, 1, 1, 0), "NVL185", 1L);
+        flight2 = createFlight(LocalDateTime.of(2020, Month.MARCH, 2, 0, 0), LocalDateTime.of(2020, Month.MARCH, 2, 1, 0), "CVL186", 2L);
 
         airport1 = createAirport("SAE", "Dubai airport", "Dubai", 1L);
         airport2 = createAirport("SAE", "New York airport", "NewYork", 2L);
@@ -104,9 +98,9 @@ class FlightServiceImplTest {
 
     @Test
     void filterFlightsByArrival() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL187", 5L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 16, 30), LocalDateTime.of(2020, Month.OCTOBER, 3, 18, 30), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 16, 35), LocalDateTime.of(2020, Month.OCTOBER, 4, 18, 35), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 19, 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 20, 0), "NVL187", 5L);
         flightA.setDestinationAirport(airport1);
         flightA.setOriginAirport(airport2);
         flightB.setDestinationAirport(airport2);
@@ -118,15 +112,15 @@ class FlightServiceImplTest {
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 4), null, null, null);
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDateTime.of(2020, Month.OCTOBER, 4, 16, 35), null, null, null);
         assertEquals(List.of(flightC), filteredFlights);
     }
 
     @Test
     void filterFlightsByDestinationAirport() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL187", 5L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 3, 0, 0), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 ,0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0, 0), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 0, 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0, 0), "NVL187", 5L);
         flightA.setDestinationAirport(airport1);
         flightA.setOriginAirport(airport2);
         flightB.setDestinationAirport(airport2);
@@ -144,9 +138,9 @@ class FlightServiceImplTest {
 
     @Test
     void filterFlightsByOriginAirport() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL187", 5L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), "NVL187", 5L);
         flightA.setDestinationAirport(airport1);
         flightA.setOriginAirport(airport2);
         flightB.setDestinationAirport(airport2);
@@ -164,9 +158,9 @@ class FlightServiceImplTest {
 
     @Test
     void filterFlightsByDeparture() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL187", 5L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), "NVL187", 5L);
         flightA.setDestinationAirport(airport1);
         flightA.setOriginAirport(airport2);
         flightB.setDestinationAirport(airport2);
@@ -178,17 +172,17 @@ class FlightServiceImplTest {
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(null, LocalDate.of(2020, Month.OCTOBER, 4), null, null);
+        List<Flight> filteredFlights = flightService.filterFlights(null, LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), null, null);
         assertEquals(List.of(flightA), filteredFlights);
     }
 
     @Test
     void filterFlights() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL187", 5L);
-        Flight flightD = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 5), "NVL188", 6L);
-        Flight flightE = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL189", 7L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), "NVL187", 5L);
+        Flight flightD = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), "NVL188", 6L);
+        Flight flightE = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), "NVL189", 7L);
 
         flightA.setDestinationAirport(airport1);
 
@@ -206,15 +200,15 @@ class FlightServiceImplTest {
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 5), airport1.getId(), airport2.getId());
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), airport1.getId(), airport2.getId());
         assertEquals(List.of(flightC), filteredFlights);
     }
 
     @Test
     void filterFlightsByArrivalAndDeparture() {
-        Flight flightA = createFlight(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 3), "NVL185", 3L);
-        Flight flightB = createFlight(LocalDate.of(2020, Month.OCTOBER, 4), LocalDate.of(2020, Month.OCTOBER, 4), "NVL186", 4L);
-        Flight flightC = createFlight(LocalDate.of(2020, Month.OCTOBER, 5), LocalDate.of(2020, Month.OCTOBER, 5), "NVL187", 5L);
+        Flight flightA = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), "NVL185", 3L);
+        Flight flightB = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 4, 0 , 0), "NVL186", 4L);
+        Flight flightC = createFlight(LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), "NVL187", 5L);
         flightA.setDestinationAirport(airport1);
         flightA.setOriginAirport(airport2);
         flightB.setDestinationAirport(airport2);
@@ -226,13 +220,13 @@ class FlightServiceImplTest {
         when(airportDao.findById(airport1.getId())).thenReturn(airport1);
         when(airportDao.findById(airport2.getId())).thenReturn(airport2);
 
-        List<Flight> filteredFlights = flightService.filterFlights(LocalDate.of(2020, Month.OCTOBER, 3), LocalDate.of(2020, Month.OCTOBER, 5), null, null);
+        List<Flight> filteredFlights = flightService.filterFlights(LocalDateTime.of(2020, Month.OCTOBER, 3, 0 , 0), LocalDateTime.of(2020, Month.OCTOBER, 5, 0 , 0), null, null);
         assertEquals(List.of(flightB), filteredFlights);
     }
 
     @Test
     void create() throws AirportManagerException {
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 4), LocalDate.of(2020, Month.MARCH, 4), "CDL186", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0), "CDL186", 3L);
         flight3.setAirplane(airplane);
 
         when(flightDao.findById(flight1.getId())).thenReturn(flight1);
@@ -251,7 +245,7 @@ class FlightServiceImplTest {
 
     @Test
     void update() throws AirportManagerException {
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 4), LocalDate.of(2020, Month.MARCH, 4), "CDL186", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0), "CDL186", 3L);
         flight3.setAirplane(airplane);
 
         when(flightDao.findById(flight1.getId())).thenReturn(flight1);
@@ -271,8 +265,8 @@ class FlightServiceImplTest {
 
     @Test
     void createAirplaneException() {
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 5), LocalDate.of(2020, Month.MARCH, 5), "Ns185", 3L);
-        Flight flight4 = createFlight(LocalDate.of(2020, Month.MARCH, 5), LocalDate.of(2020, Month.MARCH, 5), "Ns186", 4L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 5, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 5, 0 , 0), "Ns185", 3L);
+        Flight flight4 = createFlight(LocalDateTime.of(2020, Month.MARCH, 5, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 5, 0 , 0), "Ns186", 4L);
 
         //flight without stewards, so stewards will not be the thrown exception
         flight3.setAirplane(airplane);
@@ -288,10 +282,10 @@ class FlightServiceImplTest {
 
     @Test
     void createStewardException() {
-        flight1.setDeparture(LocalDate.of(2020, Month.MARCH, 1));
-        flight1.setDeparture(LocalDate.of(2020, Month.MARCH, 1));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0));
         Airplane airplane2 = createAirplane("RandomAirpldsfds3", 100, AirplaneType.JET, 2L);
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "Ns185", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), "Ns185", 3L);
         flight3.setAirplane(airplane2);
         flight3.addSteward(steward1);
 
@@ -308,7 +302,7 @@ class FlightServiceImplTest {
 
     @Test
     void updateAirplaneException() {
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "Ns185", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 1, 1, 0), "Ns185", 3L);
         flight3.setAirplane(airplane);
         flight1.setDestinationAirport(airport1);
         flight1.setOriginAirport(airport2);
@@ -334,9 +328,9 @@ class FlightServiceImplTest {
 
     @Test
     void updateStewardException() {
-        flight1.setDeparture(LocalDate.of(2020, Month.MARCH, 1));
-        flight1.setArrival(LocalDate.of(2020, Month.MARCH, 1));
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "Ns185", 3L);
+        flight1.setDeparture(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0));
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), LocalDateTime.of(2020, Month.MARCH, 1, 0 , 0), "Ns185", 3L);
         Airplane airplane2 = createAirplane("RandomAirpldsfds3", 100, AirplaneType.JET, 2L);
         flight3.setAirplane(airplane2);
         flight3.addSteward(steward1);
@@ -360,31 +354,31 @@ class FlightServiceImplTest {
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.SEPTEMBER, 2), LocalDate.of(2020, Month.SEPTEMBER, 4), "Ns185", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.SEPTEMBER, 2, 0 , 0), LocalDateTime.of(2020, Month.SEPTEMBER, 4, 0 , 0), "Ns185", 3L);
         flight3.setAirplane(airplane2);
         flight3.addSteward(steward1);
 
         // start before end in middle
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 1));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 3));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 1, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 3, 0 , 0));
         Exception exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
         assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start before end after
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 1));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 5));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 1, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 5, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
         assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start in the middle end in the middle
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 3));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 3));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 3, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 3, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
         assertEquals("Steward is already on another flight at that time", exception.getMessage());
 
         // start in the middle end after
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 3));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 5));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 3, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 5, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.create(flight3));
         assertEquals("Steward is already on another flight at that time", exception.getMessage());
     }
@@ -396,30 +390,30 @@ class FlightServiceImplTest {
         when(stewardDao.findById(1L)).thenReturn(steward1);
         when(stewardDao.findById(2L)).thenReturn(steward2);
 
-        Flight flight3 = createFlight(LocalDate.of(2020, Month.SEPTEMBER, 1), LocalDate.of(2020, Month.SEPTEMBER, 3), "Ns185", 3L);
+        Flight flight3 = createFlight(LocalDateTime.of(2020, Month.SEPTEMBER, 1, 0 , 0), LocalDateTime.of(2020, Month.SEPTEMBER, 3, 0 , 0), "Ns185", 3L);
         flight3.setAirplane(airplane);
 
         //start in middle, end after
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 2));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 4));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 2, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 4, 0 , 0));
         Exception exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
         assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start in middle, end in middle
-        flight1.setDeparture(LocalDate.of(2020, Month.SEPTEMBER, 2));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 2));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.SEPTEMBER, 2, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 2, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
         assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start before, end in middle
-        flight1.setDeparture(LocalDate.of(2020, Month.AUGUST, 29));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 2));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.AUGUST, 29, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 2, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
         assertEquals("Airplane is already on another flight at that time", exception.getMessage());
 
         //start before, end after
-        flight1.setDeparture(LocalDate.of(2020, Month.AUGUST, 29));
-        flight1.setArrival(LocalDate.of(2020, Month.SEPTEMBER, 6));
+        flight1.setDeparture(LocalDateTime.of(2020, Month.AUGUST, 29, 0 , 0));
+        flight1.setArrival(LocalDateTime.of(2020, Month.SEPTEMBER, 6, 0 , 0));
         exception = assertThrows(AirportManagerException.class, () -> flightService.update(flight1));
         assertEquals("Airplane is already on another flight at that time", exception.getMessage());
     }
@@ -451,7 +445,7 @@ class FlightServiceImplTest {
         verify(stewardDao, times(1)).findById(steward1.getId());
     }
 
-    private Flight createFlight(LocalDate departure, LocalDate arrival, String flightCode, Long id) {
+    private Flight createFlight(LocalDateTime departure, LocalDateTime arrival, String flightCode, Long id) {
         Flight flight = new Flight();
         flight.setId(id);
         flight.setDeparture(departure);

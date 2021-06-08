@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 /**
  * @author Michal Zelenák
  **/
-public class AirplaneSimpleDTO extends AirplaneCreateDTO{
+public class FlightSimpleDTO extends FlightCreateDTO {
 
     @NotNull
     private Long id;
@@ -17,4 +17,5 @@ public class AirplaneSimpleDTO extends AirplaneCreateDTO{
     public void setId(Long id) {
         this.id = id;
     }
+
 }

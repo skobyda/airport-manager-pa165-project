@@ -19,15 +19,13 @@ import java.util.Locale;
 
 /**
  * @author Michal Zelenák
- * @created 28.05.2021
- * @project airplane-manager
  **/
 @CrossOrigin
 @RestController
 @RequestMapping("/rest/airplanes")
 public class AirplaneController extends AbstractController {
-    private final AirplaneFacade airplaneFacade;
 
+    private final AirplaneFacade airplaneFacade;
 
     @Autowired
     public AirplaneController(AirplaneFacade airplaneFacade, UserService userService) {
@@ -80,7 +78,7 @@ public class AirplaneController extends AbstractController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateAirplane(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody AirplaneDTO dto) throws AuthenticationException {
+    public ResponseEntity<Void> updateAirplane(@RequestHeader("Authorization") String header, @Valid @PathVariable Long id, @Valid @RequestBody AirplaneDTO dto) throws AuthenticationException {
         this.authenticate(header, UserRole.AIRPORT_MANAGER);
         airplaneFacade.update(dto);
         return new ResponseEntity<>(HttpStatus.OK);

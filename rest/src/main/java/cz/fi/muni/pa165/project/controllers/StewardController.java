@@ -17,8 +17,6 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 26.05.2021
- * @project airport-manager
  **/
 
 @CrossOrigin
@@ -61,7 +59,7 @@ public class StewardController extends AbstractController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateSteward(@RequestHeader("Authorization") String header, @PathVariable Long id, @RequestBody StewardDTO stewardDTO) throws AuthenticationException {
+    public ResponseEntity<Void> updateSteward(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody StewardDTO stewardDTO) throws AuthenticationException {
         this.authenticate(header, UserRole.FLIGHT_MANAGER);
         stewardFacade.update(stewardDTO);
         return new ResponseEntity<>(HttpStatus.OK);

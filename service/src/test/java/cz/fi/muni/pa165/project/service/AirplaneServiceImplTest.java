@@ -7,9 +7,7 @@ import cz.fi.muni.pa165.project.enums.AirplaneType;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,23 +21,30 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Petr Hendrych
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class AirplaneServiceImplTest {
 
+    @Autowired
+    private AirplaneService airplaneService;
+
     @MockBean
     private AirplaneDao airplaneDao;
-
-    @InjectMocks
-    private final AirplaneService airplaneService = new AirplaneServiceImpl();
-
     private Airplane airbus;
     private Airplane boeing;
+
+    private static Airplane createAirplane(Long id, String name, Integer capacity, AirplaneType type) {
+        Airplane airplane = new Airplane();
+
+        airplane.setId(id);
+        airplane.setName(name);
+        airplane.setCapacity(capacity);
+        airplane.setType(type);
+
+        return airplane;
+    }
 
     @BeforeEach
     void setUp() {
@@ -150,16 +155,5 @@ class AirplaneServiceImplTest {
 
         verify(airplaneDao).findByType(AirplaneType.COMMUTER);
         verify(airplaneDao).findByType(AirplaneType.JET);
-    }
-
-    private static Airplane createAirplane(Long id, String name, Integer capacity, AirplaneType type) {
-        Airplane airplane = new Airplane();
-
-        airplane.setId(id);
-        airplane.setName(name);
-        airplane.setCapacity(capacity);
-        airplane.setType(type);
-
-        return airplane;
     }
 }

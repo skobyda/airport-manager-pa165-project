@@ -1,26 +1,25 @@
 import React from 'react';
 import './stylesheets/App.css';
 
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import {List, ListItem, ListItemText, Menu, MenuItem, AppBar, Tabs, Tab, Button} from "@material-ui/core";
 
-import { Flights } from './flights/Flights.js';
-import { Airports } from './airports/Airports.js';
-import { Airplanes } from './airplanes/Airplanes.js';
+import {Flights} from './flights/Flights.js';
+import {Airports} from './airports/Airports.js';
+import {Airplanes} from './airplanes/Airplanes.js';
 import Stewards from './stewards/Stewards.js';
 import LoginModal from "./components/LoginModal";
 import Homepage from "./homepage/Homepage";
-import Button from "@material-ui/core/Button";
-import {List, ListItem, ListItemText, Menu, MenuItem} from "@material-ui/core";
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import UserContext from "./context/UserContext";
+import { ROLES, hasPermission } from "./helpers/helpers";
 
 const menu = { // index of menu items
     HOME: 0,
-    FLIGHTS: 1,
-    AIRPORTS: 2,
-    AIRPLANES: 3,
-    STEWARDS: 4,
+    DEPARTURES: 1,
+    ARRIVALS: 2,
+    STEWARDS: 3,
+    AIRPLANES: 4,
+    AIRPORTS: 5,
 }
 
 class App extends React.Component {
@@ -29,27 +28,35 @@ class App extends React.Component {
 
         this.state = {
             page: 0,
-            loggedUser: undefined,
             airports: [],
             openModal: false,
             anchorEl: null,
             selectedIndex: 0,
-            user: {isLogged: false, email: '', password: ''}
+            user: {isLogged: false, email: '', password: '', role: null}
         };
 
         this.onValueChanged = this.onValueChanged.bind(this);
     }
 
     onValueChanged(key, value) {
-        this.setState({ [key]: value });
+        this.setState({[key]: value});
     }
 
     handleAirportSelect(event, index) {
         this.setState({anchorEl: null, selectedIndex: index});
     }
 
-    authenticate = (isLogged, credentials) => {
-        this.setState({user: {isLogged: isLogged, email: credentials.email, password: credentials.password}});
+    handleLogoutPage() {
+        this.setState({page: 0});
+    }
+
+    authenticate = (isLogged, credentials, role) => {
+        this.setState({user: {
+                isLogged: isLogged,
+                email: credentials.email,
+                password: credentials.password,
+                role: role
+        }});
     }
 
     componentDidMount() {
@@ -58,83 +65,92 @@ class App extends React.Component {
         fetch("http://localhost:8080/pa165/rest/airports")
             .then(res => res.json())
             .then(json => onValueChanged("airports", json));
-
-        onValueChanged("loggedUser", { email: "fakeuser@fakeemail.cz", role: "admin" });
     }
 
     render() {
-        const {loggedUser, page, airports, selectedIndex, user} = this.state;
+        const {page, airports, selectedIndex, user} = this.state;
 
         return (
-            <div className="App">
-                <AppBar position="static">
-                    <Tabs aria-label="menu"
-                          onChange={(event, value) => this.onValueChanged("page", value)}
-                          value={page}>
-                        <Tab label="Home" />
-                        <Tab label="Flights" />
-                        { user.isLogged && <Tab label="Airports" /> }
-                        { user.isLogged && <Tab label="Airplanes" /> }
-                        { user.isLogged && <Tab label="Stewards" /> }
-                    </Tabs>
+            <UserContext.Provider value={{user}}>
+                <div className="App">
+                    <AppBar position="sticky">
+                        <Tabs aria-label="menu"
+                              onChange={(event, value) => this.onValueChanged("page", value)}
+                              value={page}>
+                            <Tab label="Home"/>
+                            <Tab label="Departures"/>
+                            <Tab label="Arrivals"/>
+                            {hasPermission(ROLES.FLIGHT_MANAGER, user.role) && <Tab label="Stewards"/>}
+                            {hasPermission(ROLES.AIRPORT_MANAGER, user.role) && <Tab label="Airplanes"/>}
+                            {hasPermission(ROLES.AIRPORT_MANAGER, user.role) && <Tab label="Airports"/>}
+                        </Tabs>
 
-                    <div className="right-menu">
-                        {airports.length &&
-                        <>
-                            <List component="nav" aria-label="Device settings">
-                                <ListItem
-                                    button
-                                    aria-haspopup="true"
-                                    aria-controls="lock-menu"
-                                    onClick={(event) => this.onValueChanged("anchorEl", event.currentTarget)}
+                        <div className="right-menu">
+                            {airports.length &&
+                            <>
+                                <List component="nav" aria-label="Device settings">
+                                    <ListItem
+                                        button
+                                        aria-haspopup="true"
+                                        aria-controls="lock-menu"
+                                        onClick={(event) => this.onValueChanged("anchorEl", event.currentTarget)}
+                                    >
+                                        <ListItemText primary={airports[selectedIndex].name}/> <ArrowDropDownIcon/>
+                                    </ListItem>
+                                </List>
+
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={this.state.anchorEl}
+                                    keepMounted
+                                    open={Boolean(this.state.anchorEl)}
+                                    onClose={() => this.onValueChanged("anchorEl", null)}
                                 >
-                                    <ListItemText primary={airports[selectedIndex].name}/> <ArrowDropDownIcon />
-                                </ListItem>
-                            </List>
-
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={this.state.anchorEl}
-                                keepMounted
-                                open={Boolean(this.state.anchorEl)}
-                                onClose={() => this.onValueChanged("anchorEl", null)}
-                            >
-                                {this.state.airports.map((airport, index) =>
-                                    <MenuItem key={airport.id}
-                                              selected={index === selectedIndex}
-                                              onClick={(event) => this.handleAirportSelect(event, index)}>
-                                        {airport.name}
-                                    </MenuItem>
-                                )}
-                            </Menu>
-                        </>
-                        }
-                        <LoginButton isLogged={user.isLogged}
-                                     click={(key, val) => this.onValueChanged(key, val)}
-                                     email={user.email}
-                                     logout={this.authenticate}
-                        />
+                                    {this.state.airports.map((airport, index) =>
+                                        <MenuItem key={airport.id}
+                                                  selected={index === selectedIndex}
+                                                  onClick={(event) => this.handleAirportSelect(event, index)}>
+                                            {airport.name}
+                                        </MenuItem>
+                                    )}
+                                </Menu>
+                            </>
+                            }
+                            <LoginButton isLogged={user.isLogged}
+                                         click={(key, val) => this.onValueChanged(key, val)}
+                                         email={user.email}
+                                         handlePage={() => this.handleLogoutPage()}
+                                         logout={this.authenticate}
+                            />
+                        </div>
+                    </AppBar>
+                    <div className="App-page">
+                        <div className="App-content">
+                            {page === menu.HOME &&
+                            <Homepage airport={airports.length ? airports[selectedIndex] : null} />}
+                            {page === menu.DEPARTURES &&
+                            <Flights airport={airports.length ? airports[selectedIndex] : null} departuresPage />}
+                            {page === menu.ARRIVALS &&
+                            <Flights airport={airports.length ? airports[selectedIndex] : null} departuresPage={false} />}
+                            {page === menu.STEWARDS &&
+                            <Stewards airport={airports.length ? airports[selectedIndex] : null}/>}
+                            {page === menu.AIRPORTS &&
+                            <Airports airport={airports.length ? airports[selectedIndex] : null}/>}
+                            {page === menu.AIRPLANES &&
+                            <Airplanes airport={airports.length ? airports[selectedIndex] : null} />}
+                        </div>
                     </div>
-                </AppBar>
-                <div className="App-page">
-                    <div className="App-content">
-                        { page === menu.HOME && <Homepage airport={airports.length ? airports[selectedIndex] : null} loggedUser={loggedUser}/> }
-                        { page === menu.FLIGHTS && <Flights airport={airports.length ? airports[selectedIndex] : null} loggedUser={loggedUser}/> }
-                        { page === menu.AIRPORTS && <Airports loggedUser={loggedUser} airport={airports.length ? airports[selectedIndex] : null}/> }
-                        { page === menu.AIRPLANES && <Airplanes loggedUser={loggedUser} airport={airports.length ? airports[selectedIndex] : null}/> }
-                        { page === menu.STEWARDS && <Stewards loggedUser={user} airport={airports.length ? airports[selectedIndex] : null}/> }
-                    </div>
+                    <LoginModal openModal={this.state.openModal}
+                                handleClose={() => this.onValueChanged("openModal", false)}
+                                handleAuthentication={this.authenticate}
+                    />
                 </div>
-                <LoginModal openModal={this.state.openModal}
-                            handleClose={() => this.onValueChanged("openModal", false)}
-                            handleAuthentication={this.authenticate}
-                />
-            </div>
+            </UserContext.Provider>
         );
     }
 }
 
-function LoginButton({isLogged, click, email, logout}) {
+function LoginButton({isLogged, click, email, logout, handlePage}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
@@ -146,14 +162,15 @@ function LoginButton({isLogged, click, email, logout}) {
     };
 
     const handleLogout = () => {
-        logout(false, {email: '', password: ''});
+        handlePage();
+        logout(false, {email: '', password: '', role: null});
     }
 
     if (isLogged) {
         return (
             <div style={{display: "flex", alignItems: "center"}}>
                 <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                    {email} <ArrowDropDownIcon />
+                    {email} <ArrowDropDownIcon/>
                 </Button>
                 <Menu
                     id="simple-menu"

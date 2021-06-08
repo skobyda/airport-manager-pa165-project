@@ -3,12 +3,11 @@ package cz.fi.muni.pa165.project.facade;
 import cz.fi.muni.pa165.project.dto.UserAuthenticateDTO;
 import cz.fi.muni.pa165.project.dto.UserDTO;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 04.05.2021
- * @project airport-manager
  **/
 public interface UserFacade {
 
@@ -49,5 +48,5 @@ public interface UserFacade {
      * @param u - authenticate {@Code User} object
      * @return - boolean depending on validation result
      */
-    boolean authenticate(UserAuthenticateDTO u);
+    UserDTO authenticate(UserAuthenticateDTO u) throws AuthenticationException;
 }

@@ -2,13 +2,11 @@ package cz.fi.muni.pa165.project.dao;
 
 import cz.fi.muni.pa165.project.entity.Flight;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * @author Michal Zelenák
- * @created 09.04.2021
- * @project airport-manager
  */
 public interface FlightDao {
 
@@ -54,7 +52,7 @@ public interface FlightDao {
      * @param departure - date when flight have scheduled departure
      * @return List of {@Code Flight} entities
      */
-    List<Flight> findByDeparture(LocalDate departure);
+    List<Flight> findByDeparture(LocalDateTime departure);
 
     /**
      * Method for finding list of {@Code Flight} entities by their arrival times
@@ -62,7 +60,7 @@ public interface FlightDao {
      * @param arrival - date when flight have scheduled arrival
      * @return List of {@Code Flight} entities
      */
-    List<Flight> findByArrival(LocalDate arrival);
+    List<Flight> findByArrival(LocalDateTime arrival);
 
     /**
      * Method for finding {@Code Flight} entities by their flightCode
@@ -75,7 +73,7 @@ public interface FlightDao {
     /**
      * Method for listing n first flights ordered by arrival date
      *
-     * @param limit maximal number of flights to return
+     * @param limit     maximal number of flights to return
      * @param airportId id of airport to where flights will land
      * @return list of flights
      */
@@ -84,7 +82,7 @@ public interface FlightDao {
     /**
      * Method for listing n first flights ordered by departure date
      *
-     * @param limit maximal number of flights to return
+     * @param limit     maximal number of flights to return
      * @param airportId id of airport from where flights will start
      * @return list of flights
      */

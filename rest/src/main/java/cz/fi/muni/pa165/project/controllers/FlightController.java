@@ -2,6 +2,7 @@ package cz.fi.muni.pa165.project.controllers;
 
 import cz.fi.muni.pa165.project.dto.FlightCreateDTO;
 import cz.fi.muni.pa165.project.dto.FlightDTO;
+import cz.fi.muni.pa165.project.dto.FlightSimpleDTO;
 import cz.fi.muni.pa165.project.enums.UserRole;
 import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import cz.fi.muni.pa165.project.facade.FlightFacade;
@@ -13,20 +14,19 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.validation.Valid;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * @author Jozef Vanický
- * @created 27.05.2021
- * @project airport-manager
  **/
 
 @CrossOrigin
 @RestController
 @RequestMapping("/rest/flights")
 public class FlightController extends AbstractController {
+
     private final FlightFacade flightFacade;
 
     @Autowired
@@ -55,9 +55,9 @@ public class FlightController extends AbstractController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> update(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody FlightDTO flightDTO) throws AirportManagerException, AuthenticationException {
+    public ResponseEntity<Void> update(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody FlightSimpleDTO flightSimpleDTO) throws AirportManagerException, AuthenticationException {
         this.authenticate(header, UserRole.FLIGHT_MANAGER);
-        flightFacade.update(flightDTO);
+        flightFacade.update(flightSimpleDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -84,16 +84,15 @@ public class FlightController extends AbstractController {
 
     @RequestMapping(value = "/filter", method = RequestMethod.GET)
     public ResponseEntity<List<FlightDTO>> filterFlights(
-            @RequestParam(required = false) String dateFrom,
-            @RequestParam(required = false) String dateTo,
-            @RequestParam(required = false) String departureId,
-            @RequestParam(required = false) String arrivalId) {
-
-        LocalDate dateF = !Objects.equals(dateFrom, "") ? LocalDate.parse(dateFrom) : null;
-        LocalDate dateT = !Objects.equals(dateTo, "") ? LocalDate.parse(dateTo) : null;
-        Long depId = !Objects.equals(departureId, "") ? Long.parseLong(departureId) : null;
-        Long arrId = !Objects.equals(arrivalId, "") ? Long.parseLong(arrivalId) : null;
-        List<FlightDTO> filteredFlights = flightFacade.getFilteredList(dateF, dateT, depId, arrId);
+            @RequestParam(required = false, value = "dateFrom") String dateFrom,
+            @RequestParam(required = false, value = "dateTo") String dateTo,
+            @RequestParam(required = false, value = "originAirportId") String originAirportId,
+            @RequestParam(required = false, value = "destinationAirportId") String destinationAirportId) {
+        LocalDateTime dateF = !Objects.equals(dateFrom, "") ? LocalDateTime.parse(dateFrom) : null;
+        LocalDateTime dateT = !Objects.equals(dateTo, "") ? LocalDateTime.parse(dateTo) : null;
+        Long origAirportId = !Objects.equals(originAirportId, "") ? Long.parseLong(originAirportId) : null;
+        Long destAirportId = !Objects.equals(destinationAirportId, "") ? Long.parseLong(destinationAirportId) : null;
+        List<FlightDTO> filteredFlights = flightFacade.getFilteredList(dateF, dateT, origAirportId, destAirportId);
         return ResponseEntity.status(200).body(filteredFlights);
     }
 

@@ -1,13 +1,14 @@
 package cz.fi.muni.pa165.project.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Michal Zelenák
- * @created 09.04.2021
- * @project airport-manager
  **/
 
 @Entity
@@ -17,9 +18,9 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate departure;
+    private LocalDateTime departure;
 
-    private LocalDate arrival;
+    private LocalDateTime arrival;
 
     @ManyToOne
     private Airport originAirport;
@@ -47,19 +48,19 @@ public class Flight {
         this.id = id;
     }
 
-    public LocalDate getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalDate departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 
-    public LocalDate getArrival() {
+    public LocalDateTime getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalDate arrival) {
+    public void setArrival(LocalDateTime arrival) {
         this.arrival = arrival;
     }
 
@@ -102,16 +103,16 @@ public class Flight {
         return Collections.unmodifiableSet(this.stewards);
     }
 
-    public void addSteward(Steward steward) {
-        this.stewards.add(steward);
-        steward.addFlight(this);
-    }
-
     public void setStewards(Set<Steward> stewards) {
         this.stewards = stewards;
         for (Steward steward : stewards) {
             steward.addFlight(this);
         }
+    }
+
+    public void addSteward(Steward steward) {
+        this.stewards.add(steward);
+        steward.addFlight(this);
     }
 
     public void deleteSteward(Steward steward) {
