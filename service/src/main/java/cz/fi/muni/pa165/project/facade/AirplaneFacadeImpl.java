@@ -14,19 +14,20 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 28.04.2021
- * @project airport-manager
  **/
 
 @Service
 @Transactional
 public class AirplaneFacadeImpl implements AirplaneFacade {
 
-    @Autowired
-    private AirplaneService airplaneService;
+    private final AirplaneService airplaneService;
+    private final BeanMappingService beanMappingService;
 
     @Autowired
-    private BeanMappingService beanMappingService;
+    public AirplaneFacadeImpl(AirplaneService airplaneService, BeanMappingService beanMappingService) {
+        this.airplaneService = airplaneService;
+        this.beanMappingService = beanMappingService;
+    }
 
     @Override
     public List<AirplaneDTO> findAll() {

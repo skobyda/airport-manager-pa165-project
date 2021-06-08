@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -22,8 +23,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Petr Hendrych
- * @created 05.05.2021
- * @project airport-manager
  **/
 
 @ExtendWith(MockitoExtension.class)
@@ -31,15 +30,13 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class UserServiceImplTest {
 
-    @MockBean
-    private UserDao userDao;
-
     @InjectMocks
     private final PasswordEncoder encoder = new Argon2PasswordEncoder();
 
-    @InjectMocks
-    private final UserService userService = new UserServiceImpl();
-
+    @Autowired
+    private UserService userService;
+    @MockBean
+    private UserDao userDao;
     private User user;
 
     @BeforeEach

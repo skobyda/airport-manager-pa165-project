@@ -7,8 +7,6 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych, Jozef Vanický, Michal Zelenák
- * @created 28.04.2021
- * @project airport-manager
  **/
 
 public interface BeanMappingService {

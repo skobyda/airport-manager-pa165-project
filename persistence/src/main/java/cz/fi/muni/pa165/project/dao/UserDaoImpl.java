@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 30.04.2021
- * @project airport-manager
  **/
 
 @Repository

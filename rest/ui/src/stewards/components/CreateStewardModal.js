@@ -1,19 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, {useContext, useState} from "react";
 import axios from "axios";
-import { Add } from "@material-ui/icons";
-import { Alert } from '@material-ui/lab'
-import {
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField
-} from "@material-ui/core";
-import { mapValues } from 'lodash';
+import {Add} from "@material-ui/icons";
+import {Alert} from '@material-ui/lab'
+import {Button, Dialog, DialogActions, DialogTitle} from "@material-ui/core";
+import {mapValues} from 'lodash';
 
-import { initialSteward } from "../helpers/helpers";
+import {initialSteward} from "../helpers/helpers";
 import StewardContext from "../context/StewardContext";
+import StewardDetailForm from "./StewardDetailForm";
 
 export default function CreateStewardModal() {
     const [open, setOpen] = useState(false);
@@ -57,56 +51,13 @@ export default function CreateStewardModal() {
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     Create new steward
                 </DialogTitle>
-                <DialogContent dividers>
-                    <div className="create-modal-inputs__container">
-                        <TextField
-                            autoFocus
-                            className="create__input"
-                            value={steward.firstName}
-                            name="firstName"
-                            label="First name"
-                            variant="outlined"
-                            size="small"
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            className="create__input"
-                            value={steward.lastName}
-                            name="lastName"
-                            label="Last name"
-                            variant="outlined"
-                            size="small"
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="create-modal-inputs__container">
-                        <TextField
-                            className="create__input"
-                            value={steward.countryCode}
-                            name="countryCode"
-                            label="Country code"
-                            variant="outlined"
-                            size="small"
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            className="create__input"
-                            value={steward.passportNumber}
-                            name="passportNumber"
-                            label="Passport number"
-                            variant="outlined"
-                            size="small"
-                            onChange={handleChange}
-                        />
-                    </div>
-                </DialogContent>
+                <StewardDetailForm error={error} steward={steward} handleChange={handleChange} />
                 <DialogActions className="dialog-actions__container">
                     <Button onClick={handleCreate} color="primary" variant="contained">
                         Save changes
                     </Button>
                 </DialogActions>
-                { error && <Alert severity="error">Steward was not created!</Alert> }
+                {error && <Alert severity="error">Steward was not created!</Alert>}
             </Dialog>
         </>
     )

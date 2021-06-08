@@ -7,8 +7,6 @@ import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 04.05.2021
- * @project airport-manager
  **/
 
 public interface UserService {
@@ -55,9 +53,10 @@ public interface UserService {
 
     /**
      * Method to authenticate role of {@Code User} trying to log in.
+     *
      * @param basicAuth - basic authorization user & pass
      * @param role - represents role of the user
-     * @return
+     * @return boolean value if user has permission to execute methods
      */
     boolean verifyRole(String basicAuth, UserRole role);
 }

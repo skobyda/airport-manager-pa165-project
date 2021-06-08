@@ -1,13 +1,7 @@
-import React, { useState, useContext } from 'react';
-import { Alert } from '@material-ui/lab'
+import React, {useContext, useState} from 'react';
+import {Alert} from '@material-ui/lab'
 import axios from "axios";
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText
-} from '@material-ui/core';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText} from '@material-ui/core';
 import StewardContext from "../context/StewardContext";
 
 export default function DeleteConfirmationModal({open, closeModal, stewardId}) {
@@ -37,7 +31,10 @@ export default function DeleteConfirmationModal({open, closeModal, stewardId}) {
     return (
         <Dialog
             open={open}
-            onClose={() => {setError(false); closeModal()}}
+            onClose={() => {
+                setError(false);
+                closeModal()
+            }}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
@@ -47,14 +44,17 @@ export default function DeleteConfirmationModal({open, closeModal, stewardId}) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => {setError(false); closeModal()}} color="primary" variant="contained">
+                <Button onClick={() => {
+                    setError(false);
+                    closeModal()
+                }} color="primary" variant="contained">
                     No
                 </Button>
                 <Button onClick={handleConfirmation} color="secondary" autoFocus variant="contained">
                     Yes
                 </Button>
             </DialogActions>
-            { error && <Alert severity="error">Steward was not deleted!</Alert> }
+            {error && <Alert severity="error">Steward was not deleted!</Alert>}
         </Dialog>
     );
 }

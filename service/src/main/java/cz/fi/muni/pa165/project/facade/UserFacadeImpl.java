@@ -9,23 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 /**
  * @author Petr Hendrych
- * @created 04.05.2021
- * @project airport-manager
  **/
 
 @Service
 @Transactional
 public class UserFacadeImpl implements UserFacade {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final BeanMappingService beanMappingService;
 
     @Autowired
-    private BeanMappingService beanMappingService;
+    public UserFacadeImpl(UserService userService, BeanMappingService beanMappingService) {
+        this.userService = userService;
+        this.beanMappingService = beanMappingService;
+    }
 
     @Override
     public void registerUser(UserDTO u, String password) {
@@ -53,8 +55,14 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public boolean authenticate(UserAuthenticateDTO u) {
-        User user = userService.findUserByEmail(u.getEmail()); // TODO: handle find with non-existing email
-        return userService.authenticate(user, u.getPassword());
+    public UserDTO authenticate(UserAuthenticateDTO u) throws AuthenticationException {
+        User user = userService.findUserByEmail(u.getEmail());
+        if (user != null) {
+            boolean authenticated = userService.authenticate(user, u.getPassword());
+            if (authenticated) {
+                return beanMappingService.mapTo(user, UserDTO.class);
+            }
+        }
+        throw new AuthenticationException("Unauthorized");
     }
 }

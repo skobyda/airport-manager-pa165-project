@@ -14,19 +14,20 @@ import java.util.List;
 
 /**
  * @author Jozef Vanický
- * @created 27.04.2021
- * @project airport-manager
  **/
 
 @Service
 @Transactional
 public class StewardFacadeImpl implements StewardFacade {
 
-    @Autowired
-    private StewardService stewardService;
+    private final StewardService stewardService;
+    private final BeanMappingService beanMappingService;
 
     @Autowired
-    private BeanMappingService beanMappingService;
+    public StewardFacadeImpl(BeanMappingService beanMappingService, StewardService stewardService) {
+        this.stewardService = stewardService;
+        this.beanMappingService = beanMappingService;
+    }
 
     @Override
     public void create(StewardCreateDTO s) {

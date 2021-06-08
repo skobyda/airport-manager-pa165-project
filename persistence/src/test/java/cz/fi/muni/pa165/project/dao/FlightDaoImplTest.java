@@ -13,16 +13,15 @@ import org.springframework.test.context.ContextConfiguration;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Petr Hendrych
- * @created 10.04.2021
- * @project airport-manager
  **/
 
 @SpringBootTest
@@ -30,26 +29,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = PersistenceTestsConfiguration.class)
 class FlightDaoImplTest {
 
-    @Autowired
-    private FlightDao flightDao;
-
-    @PersistenceContext
-    EntityManager em;
-
-    private Flight flightDestinationPrague;
-    private Flight flightDestinationVienna;
-    private Flight flightDestinationDubai;
-
-    private Airport Dubai;
-    private Airport Vienna;
-    private Airport Prague;
-
-    private Airplane Boeing;
-    private Airplane Airbus;
-
     private final String flightCodeToPrague = "NVL185";
     private final String flightCodeToVienna = "PDL834";
     private final String flightCodeToDubai = "KWL2010";
+    @PersistenceContext
+    EntityManager em;
+    @Autowired
+    private FlightDao flightDao;
+    private Flight flightDestinationPrague;
+    private Flight flightDestinationVienna;
+    private Flight flightDestinationDubai;
+    private Airport Dubai;
+    private Airport Vienna;
+    private Airport Prague;
+    private Airplane Boeing;
+    private Airplane Airbus;
 
     @BeforeEach
     void setUp() {
@@ -78,8 +72,8 @@ class FlightDaoImplTest {
     @Test
     void create() {
         flightDestinationDubai = createFlight(
-                LocalDate.of(2020, Month.JANUARY, 1),
-                LocalDate.of(2020, Month.MARCH, 1),
+                LocalDateTime.of(2020, Month.JANUARY, 1, 0, 0),
+                LocalDateTime.of(2020, Month.MARCH, 1, 0, 0),
                 Dubai,
                 Vienna,
                 Airbus,
@@ -95,8 +89,8 @@ class FlightDaoImplTest {
         assertEquals(2, allFlights.size());
 
         flightDestinationDubai = createFlight(
-                LocalDate.of(2019, Month.APRIL, 23),
-                LocalDate.of(2019, Month.APRIL, 23),
+                LocalDateTime.of(2019, Month.APRIL, 23, 0, 0),
+                LocalDateTime.of(2019, Month.APRIL, 23, 0, 10),
                 Vienna,
                 Dubai,
                 Boeing,
@@ -118,7 +112,7 @@ class FlightDaoImplTest {
     void delete() {
         assertNotNull(flightDao.findById(flightDestinationPrague.getId()));
         flightDao.delete(flightDestinationPrague);
-        assertEquals(1,flightDao.findAll().size());
+        assertEquals(1, flightDao.findAll().size());
     }
 
     @Test
@@ -134,20 +128,20 @@ class FlightDaoImplTest {
 
     @Test
     void findByDeparture() {
-        List<Flight> flightsDeparture = flightDao.findByDeparture(LocalDate.of(2020, Month.JANUARY, 1));
+        List<Flight> flightsDeparture = flightDao.findByDeparture(LocalDateTime.of(2020, Month.JANUARY, 1, 0 , 0));
         assertEquals(2, flightsDeparture.size());
 
-        List<Flight> flights = flightDao.findByDeparture(LocalDate.of(1987, Month.JULY, 23));
+        List<Flight> flights = flightDao.findByDeparture(LocalDateTime.of(1987, Month.JULY, 23, 0 , 0));
         assertEquals(0, flights.size());
     }
 
     @Test
     void findByArrival() {
-        List<Flight> flightsArrival = flightDao.findByArrival(LocalDate.of(2020, Month.MARCH, 4));
+        List<Flight> flightsArrival = flightDao.findByArrival(LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0));
         assertEquals(1, flightsArrival.size());
         assertEquals(flightsArrival.get(0).getId(), flightDestinationPrague.getId());
 
-        List<Flight> flights = flightDao.findByArrival(LocalDate.of(1999, Month.NOVEMBER, 16));
+        List<Flight> flights = flightDao.findByArrival(LocalDateTime.of(1999, Month.NOVEMBER, 16, 0 , 0));
         assertEquals(0, flights.size());
     }
 
@@ -158,22 +152,22 @@ class FlightDaoImplTest {
 
     private void createFlightsToEurope() {
         flightDestinationPrague = createFlight(
-                LocalDate.of(2020, Month.JANUARY, 1),
-                LocalDate.of(2020, Month.MARCH, 4),
+                LocalDateTime.of(2020, Month.JANUARY, 1, 0 , 0),
+                LocalDateTime.of(2020, Month.MARCH, 4, 0 , 0),
                 Prague,
                 Vienna,
                 Airbus,
                 flightCodeToPrague);
         flightDestinationVienna = createFlight(
-                LocalDate.of(2020, Month.JANUARY, 1),
-                LocalDate.of(2020, Month.FEBRUARY, 4),
+                LocalDateTime.of(2020, Month.JANUARY, 1, 0 , 0),
+                LocalDateTime.of(2020, Month.FEBRUARY, 4, 0 , 0),
                 Vienna,
                 Prague,
                 Boeing,
                 flightCodeToVienna);
     }
 
-    private Flight createFlight(LocalDate departure, LocalDate arrival, Airport destination, Airport origin, Airplane airplane, String flightCode) {
+    private Flight createFlight(LocalDateTime departure, LocalDateTime arrival, Airport destination, Airport origin, Airplane airplane, String flightCode) {
         Flight flight = new Flight();
         flight.setFlightCode(flightCode);
         flight.setDeparture(departure);

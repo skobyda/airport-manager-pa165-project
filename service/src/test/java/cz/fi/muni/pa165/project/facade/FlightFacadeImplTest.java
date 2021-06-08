@@ -11,15 +11,12 @@ import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
 import cz.fi.muni.pa165.project.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
@@ -29,18 +26,14 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Michal Zelenák
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class FlightFacadeImplTest {
 
     @Autowired
-    @InjectMocks
-    FlightFacadeImpl flightFacade;
+    FlightFacade flightFacade;
 
     @MockBean
     BeanMappingService beanMappingService;
@@ -71,6 +64,8 @@ class FlightFacadeImplTest {
     AirportSimpleDTO airport2DTO;
     StewardSimpleDTO steward1DTO;
     StewardSimpleDTO steward2DTO;
+    FlightSimpleDTO flightSimpleDTO;
+
 
     @BeforeEach
     public void setUp() {
@@ -95,7 +90,7 @@ class FlightFacadeImplTest {
         steward2 = (Steward) temporaryObject[0];
         steward2DTO = (StewardSimpleDTO) temporaryObject[1];
 
-        temporaryObject = createFlight(LocalDate.of(2020, Month.MARCH, 1), LocalDate.of(2020, Month.MARCH, 1), "NVL185", 1L);
+        temporaryObject = createFlight(LocalDateTime.of(2020, Month.MARCH, 1, 10, 30), LocalDateTime.of(2020, Month.MARCH, 1, 11, 30), "NVL185", 1L);
         flight1 = (Flight) temporaryObject[0];
         flight1DTO = (FlightDTO) temporaryObject[1];
 
@@ -145,7 +140,7 @@ class FlightFacadeImplTest {
     @Test
     void create() throws AirportManagerException {
         //Initialize Flight and FlightCreateDTO classes
-        Object[] temporaryObject = createFlightWithoutStewards(LocalDate.of(2020, Month.MARCH, 2), LocalDate.of(2020, Month.MARCH, 2), "NVL185", 2L);
+        Object[] temporaryObject = createFlightWithoutStewards(LocalDateTime.of(2020, Month.MARCH, 2, 9, 30), LocalDateTime.of(2020, Month.MARCH, 2, 10, 30), "NVL185", 2L);
         Flight flight2WithoutStewards = (Flight) temporaryObject[0];
         FlightCreateDTO flight2CreateDTO = (FlightCreateDTO) temporaryObject[1];
         flight2WithoutStewards.setAirplane(flight1.getAirplane());
@@ -170,13 +165,28 @@ class FlightFacadeImplTest {
 
     @Test
     void update() throws AirportManagerException {
+        flightSimpleDTO = new FlightSimpleDTO();
+        flightSimpleDTO.setFlightCode(flight1DTO.getFlightCode());
+        flightSimpleDTO.setArrival(flight1DTO.getArrival());
+        flightSimpleDTO.setDeparture(flight1DTO.getDeparture());
+        flightSimpleDTO.setId(flight1DTO.getId());
+        flightSimpleDTO.setAirplaneId(flight1DTO.getAirplane().getId());
+        flightSimpleDTO.setDestinationAirportId(flight1DTO.getDestinationAirport().getId());
+        flightSimpleDTO.setOriginAirportId(flight1DTO.getOriginAirport().getId());
+        HashSet<Long> stewardIds = new HashSet<>();
+        for (StewardSimpleDTO steward : flight1DTO.getStewards()) {
+            stewardIds.add(steward.getId());
+        }
         when(flightService.update(flight1)).thenReturn(flight1);
+        when(airplaneService.findById(flightSimpleDTO.getAirplaneId())).thenReturn(airplane1);
+        when(airportService.findById(flightSimpleDTO.getOriginAirportId())).thenReturn(airport1);
+        when(airportService.findById(flightSimpleDTO.getDestinationAirportId())).thenReturn(airport2);
+        when(stewardService.findById(steward1.getId())).thenReturn(steward1);
+        when(stewardService.findById(steward2.getId())).thenReturn(steward2);
 
         //test facade method update
-        flightFacade.update(flight1DTO);
+        flightFacade.update(flightSimpleDTO);
         verify(flightService, times(1)).update(flight1);
-
-
     }
 
     @Test
@@ -205,7 +215,7 @@ class FlightFacadeImplTest {
         verify(flightService, times(1)).removeSteward(steward1.getId(), flight1.getId());
     }
 
-    private Object[] createFlight(LocalDate departure, LocalDate arrival, String flightCode, Long id) {
+    private Object[] createFlight(LocalDateTime departure, LocalDateTime arrival, String flightCode, Long id) {
         Flight flight = new Flight();
         flight.setId(id);
         flight.setDeparture(departure);
@@ -220,7 +230,7 @@ class FlightFacadeImplTest {
         return new Object[]{flight, flightDTO};
     }
 
-    private Object[] createFlightWithoutStewards(LocalDate departure, LocalDate arrival, String flightCode, Long id) {
+    private Object[] createFlightWithoutStewards(LocalDateTime departure, LocalDateTime arrival, String flightCode, Long id) {
         Flight flight = new Flight();
         flight.setId(id);
         flight.setDeparture(departure);

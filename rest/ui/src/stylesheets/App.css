@@ -1,61 +1,65 @@
 .App {
-  background-image: url("../assets/background.jpg");
-  background-size: cover;
-  display: grid
+    background-image: url("../assets/background.jpg");
+    background-size: cover;
+    display: grid
 }
 
 .App-logo {
-  height: 40vmin;
+    height: 40vmin;
 }
 
 .App-page {
-  min-height: calc(100vh - 48px);
-  display: flex;
-  flex-direction: column;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    min-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-content {
-  min-width: 90%;
-  margin: 2em 2em 0 2em;
+    min-width: 90%;
+    margin: 2em 2em 0 2em;
 }
 
 .App-link {
-  color: #09d3ac;
+    color: #09d3ac;
 }
 
 .right-menu {
-  position: absolute;
-  right: 3em;
-  display: flex;
-  height: 48px;
-  justify-content: flex-end;
-  gap: 15px;
+    position: absolute;
+    right: 3em;
+    display: flex;
+    height: 48px;
+    justify-content: flex-end;
+    gap: 15px;
 }
 
 .right-menu .MuiButton-label {
-  color: white;
+    color: white;
 }
 
 .right-menu .MuiListItem-root {
-  padding: 0 16px;
+    padding: 0 16px;
 }
 
 .MuiTabs-flexContainer {
-  position: relative;
+    position: relative;
 }
 
 /* Homepage styles */
 
 .homepage-grid__container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 1em;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1em;
 }
 
 .homepage-grid__container h4 {
-  margin: 5px 0;
-  color: #343434;
-  border-bottom: 1px solid #343434;
+    margin: 5px 0;
+    color: #343434;
+    border-bottom: 1px solid #343434;
+}
+
+.big-card--bottom-margin {
+    margin-bottom: 2em;
 }

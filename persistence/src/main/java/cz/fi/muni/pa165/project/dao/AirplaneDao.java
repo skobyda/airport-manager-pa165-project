@@ -6,11 +6,9 @@ import cz.fi.muni.pa165.project.enums.AirplaneType;
 import java.util.List;
 
 /**
- * @author Simon Kobyda
- * @created 07/04/2021
- * @project airport-manager
- * <p>
  * Interface for Airplane data object
+ *
+ * @author Simon Kobyda
  **/
 public interface AirplaneDao {
 

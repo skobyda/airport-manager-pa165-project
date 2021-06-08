@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import {createContext} from "react";
 
 export const initialFilter = {
     firstName: "",
@@ -9,7 +9,8 @@ export const initialFilter = {
 
 const StewardContext = createContext({
     loggedUser: {},
-    fetchData: () => {}
+    fetchData: () => {
+    }
 })
 
-export default  StewardContext;
+export default StewardContext;

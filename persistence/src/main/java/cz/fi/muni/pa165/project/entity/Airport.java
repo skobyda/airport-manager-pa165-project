@@ -1,12 +1,11 @@
 package cz.fi.muni.pa165.project.entity;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Simon Kobyda
- * @created 07/04/2021
- * @project airport-manager
  **/
 @Entity
 public class Airport {
@@ -31,12 +30,12 @@ public class Airport {
     public Airport() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

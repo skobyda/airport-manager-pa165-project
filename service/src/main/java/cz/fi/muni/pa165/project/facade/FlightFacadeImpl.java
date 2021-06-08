@@ -2,8 +2,7 @@ package cz.fi.muni.pa165.project.facade;
 
 import cz.fi.muni.pa165.project.dto.FlightCreateDTO;
 import cz.fi.muni.pa165.project.dto.FlightDTO;
-import cz.fi.muni.pa165.project.dto.StewardDTO;
-import cz.fi.muni.pa165.project.dto.StewardFilterDTO;
+import cz.fi.muni.pa165.project.dto.FlightSimpleDTO;
 import cz.fi.muni.pa165.project.entity.Flight;
 import cz.fi.muni.pa165.project.entity.Steward;
 import cz.fi.muni.pa165.project.exceptions.AirportManagerException;
@@ -12,34 +11,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
 /**
  * @author Michal Zelenák
- * @created 5.05.2021
- * @project airport-manager
  **/
 
 @Service
 @Transactional
 public class FlightFacadeImpl implements FlightFacade {
 
-    @Autowired
-    private BeanMappingService beanMappingService;
+    private final BeanMappingService beanMappingService;
+    private final FlightService flightService;
+    private final AirportService airportService;
+    private final AirplaneService airplaneService;
+    private final StewardService stewardService;
 
     @Autowired
-    private FlightService flightService;
-
-    @Autowired
-    private AirportService airportService;
-
-    @Autowired
-    private AirplaneService airplaneService;
-
-    @Autowired
-    private StewardService stewardService;
+    public FlightFacadeImpl(FlightService flightService,
+                            AirportService airportService,
+                            AirplaneService airplaneService,
+                            StewardService stewardService,
+                            BeanMappingService beanMappingService
+    ) {
+        this.beanMappingService = beanMappingService;
+        this.flightService = flightService;
+        this.airportService = airportService;
+        this.airplaneService = airplaneService;
+        this.stewardService = stewardService;
+    }
 
 
     @Override
@@ -60,7 +62,7 @@ public class FlightFacadeImpl implements FlightFacade {
         mappedFlight.setOriginAirport(airportService.findById(flightCreateDTO.getOriginAirportId()));
         mappedFlight.setDestinationAirport(airportService.findById(flightCreateDTO.getDestinationAirportId()));
         HashSet<Steward> stewards = new HashSet();
-        for(Long stewardID: flightCreateDTO.getStewardIds()){
+        for (Long stewardID : flightCreateDTO.getStewardIds()) {
             stewards.add(stewardService.findById(stewardID));
         }
         Flight flight = flightService.create(mappedFlight);
@@ -68,11 +70,23 @@ public class FlightFacadeImpl implements FlightFacade {
     }
 
     @Override
-    public Long update(FlightDTO flightDTO) throws AirportManagerException {
-        Flight mappedFlight = beanMappingService.mapTo(flightDTO, Flight.class);
+    public Long update(FlightSimpleDTO flightSimpleDTO) throws AirportManagerException {
+        Flight mappedFlight = new Flight();
+        mappedFlight.setFlightCode(flightSimpleDTO.getFlightCode());
+        mappedFlight.setDeparture(flightSimpleDTO.getDeparture());
+        mappedFlight.setArrival(flightSimpleDTO.getArrival());
+        mappedFlight.setId(flightSimpleDTO.getId());
+        mappedFlight.setAirplane(airplaneService.findById(flightSimpleDTO.getAirplaneId()));
+        mappedFlight.setOriginAirport(airportService.findById(flightSimpleDTO.getOriginAirportId()));
+        mappedFlight.setDestinationAirport(airportService.findById(flightSimpleDTO.getDestinationAirportId()));
+        HashSet<Steward> stewards = new HashSet<>();
+        for (Long stewardID : flightSimpleDTO.getStewardIds()) {
+            stewards.add(stewardService.findById(stewardID));
+        }
+        mappedFlight.setStewards(stewards);
         Flight flight = flightService.update(mappedFlight);
         return flight.getId();
-    }
+        }
 
     @Override
     public void delete(Long id) {
@@ -80,7 +94,7 @@ public class FlightFacadeImpl implements FlightFacade {
     }
 
     @Override
-    public List<FlightDTO> getFilteredList(LocalDate dateFrom, LocalDate dateTo, Long departureAirportId, Long arrivalAirportId) {
+    public List<FlightDTO> getFilteredList(LocalDateTime dateFrom, LocalDateTime dateTo, Long departureAirportId, Long arrivalAirportId) {
         return beanMappingService.mapTo(flightService.filterFlights(dateFrom, dateTo, departureAirportId, arrivalAirportId), FlightDTO.class);
     }
 
@@ -96,12 +110,12 @@ public class FlightFacadeImpl implements FlightFacade {
 
     @Override
     public List<FlightDTO> getFlightsOrderedByArrival(int limit, Long airportId) {
-        return beanMappingService.mapTo(flightService.getFlightsOrderedByArrival(limit,airportId), FlightDTO.class);
+        return beanMappingService.mapTo(flightService.getFlightsOrderedByArrival(limit, airportId), FlightDTO.class);
     }
 
     @Override
     public List<FlightDTO> getFlightsOrderedByDeparture(int limit, Long airportId) {
-        return beanMappingService.mapTo(flightService.getFlightsOrderedByDeparture(limit,airportId), FlightDTO.class);
+        return beanMappingService.mapTo(flightService.getFlightsOrderedByDeparture(limit, airportId), FlightDTO.class);
     }
 
 }

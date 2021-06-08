@@ -3,12 +3,12 @@ package cz.fi.muni.pa165.project.entity;
 import cz.fi.muni.pa165.project.enums.AirplaneType;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Petr Hendrych
- * @created 08.04.2021
- * @project airport-manager
  **/
 
 @Entity

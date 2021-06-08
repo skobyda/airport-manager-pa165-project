@@ -1,12 +1,11 @@
 package cz.fi.muni.pa165.project.dto;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
  * @author Jozef Vanický
- * @created 27.04.2021
- * @project airport-manager
  **/
 public class StewardCreateDTO {
 

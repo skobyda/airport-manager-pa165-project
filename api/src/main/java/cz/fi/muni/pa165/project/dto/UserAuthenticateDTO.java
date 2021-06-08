@@ -2,8 +2,6 @@ package cz.fi.muni.pa165.project.dto;
 
 /**
  * @author Petr Hendrych
- * @created 04.05.2021
- * @project airport-manager
  **/
 public class UserAuthenticateDTO {
 

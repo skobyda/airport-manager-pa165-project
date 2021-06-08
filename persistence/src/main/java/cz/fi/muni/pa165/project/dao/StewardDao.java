@@ -7,8 +7,6 @@ import java.util.List;
 
 /**
  * @author Jozef Vanický
- * @created 09.04.2021
- * @project airport-manager
  **/
 public interface StewardDao {
 

@@ -22,11 +22,8 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Jozef Vanický
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 class StewardServiceImplTest {
@@ -38,8 +35,7 @@ class StewardServiceImplTest {
     StewardDao stewardDao;
 
     @Autowired
-    @InjectMocks
-    StewardServiceImpl stewardService;
+    StewardService stewardService;
 
     @BeforeEach
     void setUp() throws ServiceException {

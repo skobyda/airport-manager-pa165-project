@@ -1,55 +1,41 @@
 package cz.fi.muni.pa165.project.facade;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-
 import cz.fi.muni.pa165.project.ServiceTestsConfiguration;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-
-import java.util.List;
-
 import cz.fi.muni.pa165.project.dto.AirportCreateDTO;
 import cz.fi.muni.pa165.project.dto.AirportDTO;
 import cz.fi.muni.pa165.project.entity.Airport;
-import cz.fi.muni.pa165.project.service.AirportServiceImpl;
+import cz.fi.muni.pa165.project.service.AirportService;
 import cz.fi.muni.pa165.project.service.BeanMappingService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
 /**
  * @author Simon Kobyda
- * @created 05.05.2021
- * @project airport-manager
  **/
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = ServiceTestsConfiguration.class)
 public class AirportFacadeTest {
 
+    Airport airportVienna;
+    AirportDTO airportDTOVienna;
+    AirportCreateDTO airportCreateDTOVienna;
+
     @Autowired
-    @InjectMocks
-    private AirportFacadeImpl airportFacade;
-
+    private AirportFacade airportFacade;
     @MockBean
-    private AirportServiceImpl airportService;
-
+    private AirportService airportService;
     @MockBean
     private BeanMappingService beanMappingService;
-
-    Airport airportVienna;
-
-    AirportDTO airportDTOVienna;
-
-    AirportCreateDTO airportCreateDTOVienna;
 
     @BeforeEach
     public void setUp() {

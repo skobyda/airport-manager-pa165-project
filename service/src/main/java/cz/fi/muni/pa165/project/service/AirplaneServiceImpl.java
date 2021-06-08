@@ -12,15 +12,17 @@ import java.util.stream.Collectors;
 
 /**
  * @author Petr Hendrych
- * @created 28.04.2021
- * @project airport-manager
  **/
 
 @Service
 public class AirplaneServiceImpl implements AirplaneService {
 
+    private final AirplaneDao airplaneDao;
+
     @Autowired
-    private AirplaneDao airplaneDao;
+    public AirplaneServiceImpl(AirplaneDao airplaneDao) {
+        this.airplaneDao = airplaneDao;
+    }
 
     @Override
     public List<Airplane> findAll() {

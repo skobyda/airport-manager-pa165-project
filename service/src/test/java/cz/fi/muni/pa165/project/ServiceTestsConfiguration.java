@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Petr Hendrych
- * @created 24.05.2021
- * @project airport-manager
  **/
 @Configuration
 @ComponentScan

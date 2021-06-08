@@ -4,8 +4,8 @@ import cz.fi.muni.pa165.project.dto.AirportCreateDTO;
 import cz.fi.muni.pa165.project.dto.AirportDTO;
 import cz.fi.muni.pa165.project.dto.FlightDTO;
 import cz.fi.muni.pa165.project.entity.Airport;
-import cz.fi.muni.pa165.project.service.AirportService;
 import cz.fi.muni.pa165.project.entity.Flight;
+import cz.fi.muni.pa165.project.service.AirportService;
 import cz.fi.muni.pa165.project.service.BeanMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,19 +15,20 @@ import java.util.List;
 
 /**
  * @author Simon Kobyda
- * @created 27/04/2021
- * @project airport-manager
  **/
 
 @Service
 @Transactional
 public class AirportFacadeImpl implements AirportFacade {
 
-    @Autowired
-    private AirportService airportService;
+    private final AirportService airportService;
+    private final BeanMappingService beanMappingService;
 
     @Autowired
-    private BeanMappingService beanMappingService;
+    public AirportFacadeImpl(AirportService airportService, BeanMappingService beanMappingService) {
+        this.beanMappingService = beanMappingService;
+        this.airportService = airportService;
+    }
 
     @Override
     public void create(AirportCreateDTO airport) {

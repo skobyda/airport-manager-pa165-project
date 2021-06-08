@@ -18,13 +18,12 @@ import java.util.List;
 
 /**
  * @author Simon Kobyda
- * @created 26.05.2021
- * @project airport-manager
  **/
 @CrossOrigin
 @RestController
 @RequestMapping("/rest/airports")
 public class AirportController extends AbstractController {
+
     private final AirportFacade airportFacade;
 
     @Autowired
@@ -83,7 +82,7 @@ public class AirportController extends AbstractController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateAirport(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody AirportDTO dto) throws AuthenticationException {
+    public ResponseEntity<Void> updateAirport(@RequestHeader("Authorization") String header, @Valid @PathVariable Long id, @Valid @RequestBody AirportDTO dto) throws AuthenticationException {
         this.authenticate(header, UserRole.AIRPORT_MANAGER);
         airportFacade.update(dto);
         return new ResponseEntity<>(HttpStatus.OK);

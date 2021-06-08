@@ -8,8 +8,6 @@ import java.util.List;
 
 /**
  * @author Jozef Vanický
- * @created 27.04.2021
- * @project airport-manager
  **/
 public interface StewardFacade {
 

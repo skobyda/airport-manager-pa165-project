@@ -1,18 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {Alert} from '@material-ui/lab'
-import {
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField
-} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogTitle} from "@material-ui/core";
 import {mapValues} from 'lodash';
 
 import {initialSteward} from "../helpers/helpers";
 import StewardContext from "../context/StewardContext";
+import StewardDetailForm from "./StewardDetailForm";
 
 export default function EditStewardModal({stewardId, open, closeModal}) {
     const [steward, setSteward] = useState(initialSteward);
@@ -30,8 +24,7 @@ export default function EditStewardModal({stewardId, open, closeModal}) {
         }
 
         try {
-            fetchSteward()
-                .then(res => setSteward(res.data));
+            fetchSteward().then(res => setSteward(res.data));
         } catch (e) {
             setError(true);
         }
@@ -46,7 +39,12 @@ export default function EditStewardModal({stewardId, open, closeModal}) {
     const handleEdit = async () => {
         const stewardWithNulls = mapValues(steward, v => v === '' ? null : v);
         try {
-            await axios.put(`http://localhost:8080/pa165/rest/stewards/${stewardId}`, stewardWithNulls);
+            await axios.put(`http://localhost:8080/pa165/rest/stewards/${stewardId}`, stewardWithNulls, {
+                auth: {
+                    username: loggedUser.email,
+                    password: loggedUser.password
+                }
+            });
             fetchData();
             closeModal();
         } catch (e) {
@@ -59,50 +57,7 @@ export default function EditStewardModal({stewardId, open, closeModal}) {
             <DialogTitle id="customized-dialog-title" onClose={closeModal}>
                 Update steward
             </DialogTitle>
-            <DialogContent dividers>
-                <div className="create-modal-inputs__container">
-                    <TextField
-                        autoFocus
-                        className="create__input"
-                        value={steward.firstName}
-                        name="firstName"
-                        label="First name"
-                        variant="outlined"
-                        size="small"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        className="create__input"
-                        value={steward.lastName}
-                        name="lastName"
-                        label="Last name"
-                        variant="outlined"
-                        size="small"
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="create-modal-inputs__container">
-                    <TextField
-                        className="create__input"
-                        value={steward.countryCode}
-                        name="countryCode"
-                        label="Country code"
-                        variant="outlined"
-                        size="small"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        className="create__input"
-                        value={steward.passportNumber}
-                        name="passportNumber"
-                        label="Passport number"
-                        variant="outlined"
-                        size="small"
-                        onChange={handleChange}
-                    />
-                </div>
-            </DialogContent>
+            <StewardDetailForm error={error} steward={steward} handleChange={handleChange}/>
             <DialogActions className="dialog-actions__container">
                 <Button onClick={handleEdit} color="primary" variant="contained">
                     Save changes

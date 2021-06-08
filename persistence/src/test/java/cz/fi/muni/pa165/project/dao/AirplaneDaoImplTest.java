@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jozef Vanický
- * @created 10.04.2021
- * @project airport-manager
  **/
 
 @SpringBootTest
@@ -88,7 +86,7 @@ class AirplaneDaoImplTest {
     void delete() {
         assertNotNull(airplaneDao.findById(airplane3.getId()));
         airplaneDao.delete(airplane3);
-        assertEquals(3,airplaneDao.findAll().size());
+        assertEquals(3, airplaneDao.findAll().size());
     }
 
     @Test

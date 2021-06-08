@@ -13,18 +13,20 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * @author Petr Hendrych
- * @created 04.05.2021
- * @project airport-manager
+ * @author Petr Hendrych, Jozef Vanicky
  **/
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserDao userDao;
-
     private final PasswordEncoder encoder = new Argon2PasswordEncoder();
+
+    private final UserDao userDao;
+
+    @Autowired
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public void registerUser(User u, String password) {

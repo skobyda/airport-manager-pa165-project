@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 
 /**
  * @author Jozef Vanický
- * @created 28.04.2021
- * @project airport-manager
  **/
 
 @Service
 public class StewardServiceImpl implements StewardService {
 
+    private final StewardDao stewardDao;
+
     @Autowired
-    private StewardDao stewardDao;
+    public StewardServiceImpl(StewardDao stewardDao) {
+        this.stewardDao = stewardDao;
+    }
 
     @Override
     public void create(Steward s) {

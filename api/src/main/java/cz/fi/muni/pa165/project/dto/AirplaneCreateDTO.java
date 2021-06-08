@@ -2,13 +2,14 @@ package cz.fi.muni.pa165.project.dto;
 
 import cz.fi.muni.pa165.project.enums.AirplaneType;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
  * @author Petr Hendrych
- * @created 26.04.2021
- * @project airport-manager
  **/
 public class AirplaneCreateDTO {
 
